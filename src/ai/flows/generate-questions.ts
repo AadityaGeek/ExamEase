@@ -67,7 +67,7 @@ Ensure the questions are strictly exam-oriented, concept-based, and directly rel
 
 SPECIAL INSTRUCTIONS:
 - For 'MCQ' (Multiple Choice Questions), the question should be on the first line, and each option (e.g., A, B, C, D) must be on a new line with indentation. Use newline characters and spaces to format it.
-Example: "Which of the following is a noble gas?\\n  A. Oxygen\\n  B. Nitrogen\\n  C. Argon\\n  D. Carbon Dioxide"
+Example: "Which of the following is a noble gas?\\n\\t\\t  A. Oxygen\\n\\t\\t  B. Nitrogen\\n\\t\\t  C. Argon\\n\\t\\t  D. Carbon Dioxide"
 
 VERY IMPORTANT: Your response MUST be a single, valid JSON object formatted as a string. Do not include any text or formatting before or after the JSON object.
 The JSON object must have a single key called "questions". The value of "questions" should be an object where each key is a question type (e.g., "MCQ", "Short Answer") and the value is an array of strings, where each string is a generated question.
