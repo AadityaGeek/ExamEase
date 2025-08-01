@@ -27,7 +27,7 @@ export const generatePdf = (
   let yPos = 45;
   const margin = 15;
   const maxWidth = doc.internal.pageSize.getWidth() - margin * 2;
-  const answerColor = "#006400"; // Dark Green
+  const answerColor = "#334155"; // Using a readable dark gray/slate color
 
   Object.entries(questionsData.questions).forEach(([type, questions]) => {
     if (questions.length === 0) return;

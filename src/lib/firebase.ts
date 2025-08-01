@@ -4,6 +4,8 @@ import { getStorage } from "firebase/storage";
 
 // TODO: Replace with your actual Firebase project configuration
 const firebaseConfig = {
+  // Config is kept for potential future use (e.g., user auth, storage)
+  // but is not actively used for curriculum data anymore.
   projectId: "quizcraft-ai-5eed9",
   appId: "1:1005953144574:web:1b49be1ef517aa871fb7af",
   storageBucket: "quizcraft-ai-5eed9.appspot.com",
@@ -14,6 +16,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+// Firestore and Storage are initialized but may not be used if all data is local.
 const db = getFirestore(app);
 const storage = getStorage(app);
 

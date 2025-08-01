@@ -98,9 +98,9 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
                       <li key={index} className="leading-relaxed pl-2">
                         <span className="whitespace-pre-line font-code">{question}</span>
                          {showAnswers && (
-                            <div className="mt-2 p-2 bg-accent/20 border-l-4 border-accent rounded-r-md">
-                                <span className="font-semibold text-accent-foreground">Answer: </span>
-                                <span className="text-accent-foreground">{answer}</span>
+                            <div className="mt-2 p-3 bg-secondary border-l-4 border-primary rounded-r-md">
+                                <span className="font-semibold text-secondary-foreground">Answer: </span>
+                                <span className="text-secondary-foreground">{answer}</span>
                             </div>
                          )}
                       </li>

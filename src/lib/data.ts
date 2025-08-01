@@ -1,63 +1,41 @@
 
-import { db } from './firebase';
-import { collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
+import { CURRICULUM_DATA } from './curriculum-data';
 import type { Chapter, Class, Subject } from './types';
 
 export const getClasses = async (): Promise<Pick<Class, 'id' | 'name'>[]> => {
-  const classesCol = collection(db, 'classes');
-  const classSnapshot = await getDocs(classesCol);
-  const classList = classSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Pick<Class, 'id' | 'name'>));
+  const classList = CURRICULUM_DATA.map(c => ({ id: c.id, name: c.name }));
   return classList.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 };
 
 export const getSubjects = async (classId: string): Promise<Pick<Subject, 'id' | 'name'>[]> => {
     if (!classId) return [];
-    const subjectsCol = collection(db, 'classes', classId, 'subjects');
-    const subjectSnapshot = await getDocs(subjectsCol);
-    const subjectList = subjectSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Pick<Subject, 'id' | 'name'>));
+    const classData = CURRICULUM_DATA.find(c => c.id === classId);
+    if (!classData) return [];
+    const subjectList = classData.subjects.map(s => ({ id: s.id, name: s.name }));
     return subjectList.sort((a,b) => a.name.localeCompare(b.name));
 };
 
 export const getChapters = async (classId: string, subjectId: string): Promise<Chapter[]> => {
     if (!classId || !subjectId) return [];
-    const chaptersCol = collection(db, `classes/${classId}/subjects/${subjectId}/chapters`);
-    const chapterSnapshot = await getDocs(chaptersCol);
-    const chapterList = chapterSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Chapter));
-    // Sort by ID to maintain book sequence, as IDs are like 'ch-1', 'ch-2', etc.
-    return chapterList.sort((a,b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
-};
-
-export const getChapterDetails = async (classId: string, subjectId: string, chapterId: string): Promise<Chapter | null> => {
-    if (!classId || !subjectId || !chapterId) return null;
-    const chapterRef = doc(db, `classes/${classId}/subjects/${subjectId}/chapters`, chapterId);
-    const chapterSnap = await getDoc(chapterRef);
-    if (!chapterSnap.exists()) {
-        return null;
-    }
-    return { id: chapterSnap.id, ...chapterSnap.data() } as Chapter;
-}
-
-export const createChapter = async (classId: string, subjectId: string, chapterData: { title: string; pdfPath: string }): Promise<void> => {
-    if (!classId || !subjectId) {
-        throw new Error("Class ID and Subject ID are required to create a chapter.");
-    }
-    const chaptersCol = collection(db, `classes/${classId}/subjects/${subjectId}/chapters`);
-    await addDoc(chaptersCol, chapterData);
+    const classData = CURRICULUM_DATA.find(c => c.id === classId);
+    if (!classData) return [];
+    const subjectData = classData.subjects.find(s => s.id === subjectId);
+    if (!subjectData) return [];
+    // The data is already in book sequence in the source file, so we just return it.
+    // If sorting is needed, it can be done here.
+    return subjectData.chapters.sort((a,b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 };
 
 export const getClassAndSubjectDetails = async (classId: string, subjectId: string): Promise<{className: string, subjectName: string} | null> => {
     if (!classId || !subjectId) return null;
-    const classRef = doc(db, 'classes', classId);
-    const subjectRef = doc(db, `classes/${classId}/subjects`, subjectId);
+    const classData = CURRICULUM_DATA.find(c => c.id === classId);
+    const subjectData = classData?.subjects.find(s => s.id === subjectId);
 
-    const classSnap = await getDoc(classRef);
-    const subjectSnap = await getDoc(subjectRef);
-
-    if (!classSnap.exists() || !subjectSnap.exists()) {
+    if (!classData || !subjectData) {
         return null;
     }
     return {
-        className: classSnap.data().name,
-        subjectName: subjectSnap.data().name,
+        className: classData.name,
+        subjectName: subjectData.name,
     };
 }
