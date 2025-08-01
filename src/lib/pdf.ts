@@ -1,3 +1,4 @@
+
 "use client";
 
 import { jsPDF } from "jspdf";
@@ -6,7 +7,8 @@ import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
 export const generatePdf = (
     questionsData: GenerateQuestionsOutput, 
     title: string,
-    subtitle: string
+    subtitle: string,
+    includeAnswers: boolean
 ) => {
   const doc = new jsPDF({
     orientation: "p",
@@ -25,8 +27,11 @@ export const generatePdf = (
   let yPos = 45;
   const margin = 15;
   const maxWidth = doc.internal.pageSize.getWidth() - margin * 2;
+  const answerColor = "#006400"; // Dark Green
 
   Object.entries(questionsData.questions).forEach(([type, questions]) => {
+    if (questions.length === 0) return;
+    
     if (yPos > 250) { // Add new page if content is too long
       doc.addPage();
       yPos = 20;
@@ -40,19 +45,46 @@ export const generatePdf = (
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
 
-    questions.forEach((question, index) => {
-      if (yPos > 270) {
+    questions.forEach(({ question, answer }, index) => {
+      const questionText = `${index + 1}. ${question}`;
+      const splitQuestion = doc.splitTextToSize(questionText, maxWidth);
+      
+      const questionHeight = splitQuestion.length * 5;
+      const answerHeight = includeAnswers ? (doc.splitTextToSize(`Ans: ${answer}`, maxWidth - 5).length * 5) + 2 : 0;
+      
+      if (yPos + questionHeight + answerHeight > 280) {
         doc.addPage();
         yPos = 20;
       }
-      const questionText = `${index + 1}. ${question}`;
-      const splitText = doc.splitTextToSize(questionText, maxWidth);
-      doc.text(splitText, margin, yPos);
-      yPos += (splitText.length * 5) + 5; // Adjust spacing based on lines
+      
+      doc.text(splitQuestion, margin, yPos);
+      yPos += questionHeight + 2;
+
+      if (includeAnswers) {
+        doc.setTextColor(answerColor);
+        doc.setFont("helvetica", "italic");
+        const answerText = `Ans: ${answer}`;
+        const splitAnswer = doc.splitTextToSize(answerText, maxWidth - 5); // Indent answer slightly
+        doc.text(splitAnswer, margin + 5, yPos);
+        yPos += (splitAnswer.length * 5) + 5;
+        doc.setTextColor("#000000"); // Reset color
+        doc.setFont("helvetica", "normal");
+      } else {
+         yPos += 5;
+      }
     });
 
     yPos += 5; // Extra space between question types
   });
 
-  doc.save(`${title.replace(/\s+/g, '_')}_questions.pdf`);
+  // New filename generation logic
+  const parts = title.split(' - ');
+  const subjectName = parts[0]?.replace(/\s+/g, '-') || "Subject";
+  const className = parts[1]?.replace(/\s+/g, '-') || "Class";
+  
+  const nameSuffix = includeAnswers ? "With-Answers" : "Questions";
+  
+  const finalFilename = `${className}-${subjectName}-${nameSuffix}.pdf`;
+
+  doc.save(finalFilename);
 };

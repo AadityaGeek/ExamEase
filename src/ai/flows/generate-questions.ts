@@ -3,13 +3,13 @@
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for generating exam-style questions by searching for content online.
+ * @fileOverview This file defines a Genkit flow for generating exam-style questions with answers by searching for content online.
  *
  * The flow takes class, subject, chapter, and question types/counts as input.
- * It then uses a language model to find relevant information and generate questions tailored to the CBSE pattern.
+ * It then uses a language model to find relevant information and generate questions and answers tailored to the CBSE pattern.
  *
  * @param {GenerateQuestionsInput} input - The input for the question generation flow.
- * @returns {Promise<GenerateQuestionsOutput>} - A promise that resolves to the generated questions.
+ * @returns {Promise<GenerateQuestionsOutput>} - A promise that resolves to the generated questions and answers.
  */
 
 import {ai} from '@/ai/genkit';
@@ -32,11 +32,18 @@ const GenerateQuestionsInputSchema = z.object({
 
 export type GenerateQuestionsInput = z.infer<typeof GenerateQuestionsInputSchema>;
 
+// Define the schema for a single question with its answer
+const QuestionWithAnswerSchema = z.object({
+  question: z.string(),
+  answer: z.string(),
+});
+export type QuestionWithAnswer = z.infer<typeof QuestionWithAnswerSchema>;
+
 // Define the output schema for the generateQuestions flow
 const GenerateQuestionsOutputSchema = z.object({
   questions: z.record(
-    z.array(z.string())
-  ).describe('Generated questions, grouped by question type. The keys of this record should be the question types from the input.'),
+    z.array(QuestionWithAnswerSchema)
+  ).describe('Generated questions and answers, grouped by question type. The keys of this record should be the question types from the input.'),
 });
 
 export type GenerateQuestionsOutput = z.infer<typeof GenerateQuestionsOutputSchema>;
@@ -51,7 +58,7 @@ export async function generateQuestions(input: GenerateQuestionsInput): Promise<
 const generateQuestionsPrompt = ai.definePrompt({
   name: 'generateQuestionsPrompt',
   input: {schema: GenerateQuestionsInputSchema},
-  prompt: `You are an expert educator who creates exam-style questions for the Indian CBSE curriculum.
+  prompt: `You are an expert educator who creates exam-style questions and answers for the Indian CBSE curriculum.
 Your task is to generate questions based on the provided class, subject, and chapter. You will use your own knowledge and search online for the most relevant and accurate information for the topics.
 
 Class: {{{class}}}
@@ -65,14 +72,17 @@ Please generate questions for the following types and counts:
 
 Ensure the questions are strictly exam-oriented, concept-based, and directly relevant to the topics covered in the specified chapter(s) for the given class and subject under the CBSE board.
 
+For each question, you MUST provide a correct and concise answer.
+
 SPECIAL INSTRUCTIONS:
 - Your highest priority is to generate questions that are the most important and frequently repeated in past CBSE board exams. Focus on these "must-know" questions.
-- For 'MCQ' (Multiple Choice Questions), the question AND all its options MUST be a single string in the JSON array. The question should be on the first line, and each option (e.g., A, B, C, D) must be on a new line with indentation. Use newline characters and spaces to format it.
+- For 'MCQ' (Multiple Choice Questions), the question AND all its options MUST be a single string in the JSON array. The question should be on the first line, and each option (e.g., A, B, C, D) must be on a new line with indentation. Use newline characters and spaces to format it. The answer for an MCQ should be just the correct option letter (e.g., "C" or "A").
 Example of a single MCQ string: "Which of the following is a noble gas?\\n\\t  A. Oxygen\\n\\t  B. Nitrogen\\n\\t  C. Argon\\n\\t  D. Carbon Dioxide"
 - The questions should be challenging and test deep understanding of the concepts.
 
 VERY IMPORTANT: Your response MUST be a single, valid JSON object formatted as a string. Do not include any text or formatting before or after the JSON object.
-The JSON object must have a single key called "questions". The value of "questions" should be an object where each key is a question type (e.g., "MCQ", "Short Answer") and the value is an array of strings, where each string is a generated question.
+The JSON object must have a single key called "questions". The value of "questions" should be an object where each key is a question type (e.g., "MCQ", "Short Answer").
+The value for each question type should be an array of objects. Each object must have two keys: "question" (the generated question) and "answer" (the corresponding answer).
 
 For each type, you MUST generate the exact number of questions specified. Do not generate more or fewer.
 `,

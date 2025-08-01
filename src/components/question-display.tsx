@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { generatePdf } from "@/lib/pdf";
 import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
-import { Download, ListChecks, Baseline, PencilLine, FileText, Binary } from "lucide-react";
+import { Download, ListChecks, Baseline, PencilLine, FileText, Binary, Eye, EyeOff } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface QuestionDisplayProps {
   questionsData: GenerateQuestionsOutput;
@@ -24,8 +27,11 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisplayProps) {
+  const [showAnswers, setShowAnswers] = React.useState(false);
+  const [includeAnswersInPdf, setIncludeAnswersInPdf] = React.useState(false);
+
   const handleDownload = () => {
-    generatePdf(questionsData, title, subtitle);
+    generatePdf(questionsData, title, subtitle, includeAnswersInPdf);
   };
 
   const questionTypesWithContent = Object.keys(questionsData.questions).filter(
@@ -48,15 +54,30 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg print:shadow-none">
       <CardHeader>
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 print:hidden">
+             <div className="flex items-center space-x-2">
+                <Switch id="show-answers" checked={showAnswers} onCheckedChange={setShowAnswers} />
+                <Label htmlFor="show-answers" className="flex items-center gap-2 cursor-pointer">
+                    {showAnswers ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                    Show Answers
+                </Label>
+             </div>
+        </div>
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mt-4">
             <div className="text-center md:text-left flex-1">
                 <CardTitle className="font-headline text-3xl md:text-4xl">{title}</CardTitle>
                 <CardDescription className="mt-2 text-base">{subtitle}</CardDescription>
             </div>
-            <Button onClick={handleDownload} variant="outline" className="print:hidden">
-                <Download className="mr-2 h-4 w-4" />
-                Download PDF
-            </Button>
+            <div className="flex flex-col items-center gap-2 print:hidden">
+              <Button onClick={handleDownload} variant="outline" className="w-full">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download PDF
+              </Button>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="include-answers" checked={includeAnswersInPdf} onCheckedChange={(checked) => setIncludeAnswersInPdf(!!checked)} />
+                <Label htmlFor="include-answers" className="text-sm font-medium leading-none cursor-pointer">Include Answers in PDF</Label>
+              </div>
+            </div>
         </div>
       </CardHeader>
       <CardContent>
@@ -73,8 +94,16 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
                 </AccordionTrigger>
                 <AccordionContent>
                   <ol className="list-decimal list-inside space-y-5 pl-4 text-base md:text-lg">
-                    {questionsData.questions[type].map((question, index) => (
-                      <li key={index} className="leading-relaxed pl-2 whitespace-pre-line">{question}</li>
+                    {questionsData.questions[type].map(({ question, answer }, index) => (
+                      <li key={index} className="leading-relaxed pl-2">
+                        <span className="whitespace-pre-line font-code">{question}</span>
+                         {showAnswers && (
+                            <div className="mt-2 p-2 bg-accent/20 border-l-4 border-accent rounded-r-md">
+                                <span className="font-semibold text-accent-foreground">Answer: </span>
+                                <span className="text-accent-foreground">{answer}</span>
+                            </div>
+                         )}
+                      </li>
                     ))}
                   </ol>
                 </AccordionContent>
