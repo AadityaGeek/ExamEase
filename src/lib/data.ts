@@ -23,7 +23,8 @@ export const getChapters = async (classId: string, subjectId: string): Promise<C
     const chaptersCol = collection(db, `classes/${classId}/subjects/${subjectId}/chapters`);
     const chapterSnapshot = await getDocs(chaptersCol);
     const chapterList = chapterSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Chapter));
-    return chapterList.sort((a,b) => a.title.localeCompare(b.title, undefined, { numeric: true }));
+    // Sort by ID to maintain book sequence, as IDs are like 'ch-1', 'ch-2', etc.
+    return chapterList.sort((a,b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 };
 
 export const getChapterDetails = async (classId: string, subjectId: string, chapterId: string): Promise<Chapter | null> => {

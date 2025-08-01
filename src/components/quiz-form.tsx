@@ -89,6 +89,31 @@ export function QuizForm() {
     });
   };
 
+  const socialScienceChapters = React.useMemo(() => {
+    if (selectedSubject !== 'social-science') {
+      return null;
+    }
+    const grouped: Record<string, Chapter[]> = {
+      "History": [],
+      "Geography": [],
+      "Political Science (Civics)": [],
+      "Economics": [],
+    };
+    chapters.forEach(chapter => {
+      if (chapter.id.startsWith('hist-')) {
+        grouped["History"].push(chapter);
+      } else if (chapter.id.startsWith('geo-')) {
+        grouped["Geography"].push(chapter);
+      } else if (chapter.id.startsWith('civ-')) {
+        grouped["Political Science (Civics)"].push(chapter);
+      } else if (chapter.id.startsWith('econ-')) {
+        grouped["Economics"].push(chapter);
+      }
+    });
+    return grouped;
+  }, [chapters, selectedSubject]);
+
+
   return (
     <>
       <Card className="w-full max-w-3xl mx-auto shadow-lg">
@@ -152,7 +177,38 @@ export function QuizForm() {
                             <FormDescription>Select one or more chapters to include.</FormDescription>
                           </div>
                           <div className="space-y-3">
-                            {chapters.map((chapter) => (
+                           {socialScienceChapters ? (
+                              Object.entries(socialScienceChapters).map(([group, chapters]) => (
+                                chapters.length > 0 && (
+                                <div key={group} className="space-y-3">
+                                  <h3 className="text-lg font-semibold mt-4 pt-2">{group}</h3>
+                                  {chapters.map((chapter) => (
+                                     <FormField
+                                        key={chapter.id}
+                                        control={form.control}
+                                        name="chapters"
+                                        render={({ field }) => (
+                                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                            <FormControl>
+                                              <Checkbox
+                                                checked={field.value?.some(c => c.id === chapter.id)}
+                                                onCheckedChange={(checked) => {
+                                                  return checked
+                                                    ? field.onChange([...(field.value || []), chapter])
+                                                    : field.onChange(field.value?.filter((value) => value.id !== chapter.id));
+                                                }}
+                                              />
+                                            </FormControl>
+                                            <FormLabel className="font-normal">{chapter.title}</FormLabel>
+                                          </FormItem>
+                                        )}
+                                      />
+                                  ))}
+                                </div>
+                                )
+                              ))
+                           ) : (
+                            chapters.map((chapter) => (
                               <FormField
                                 key={chapter.id}
                                 control={form.control}
@@ -174,7 +230,8 @@ export function QuizForm() {
                                   </FormItem>
                                 )}}
                               />
-                            ))}
+                            ))
+                           )}
                           </div>
                           <FormMessage />
                         </FormItem>
