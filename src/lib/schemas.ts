@@ -7,7 +7,7 @@ export type QuestionType = z.infer<typeof QuestionTypeSchema>;
 
 const questionTypeCountSchema = z.object({
     type: QuestionTypeSchema,
-    count: z.coerce.number().min(1, "Must be at least 1.").max(10, "Cannot generate more than 10 questions."),
+    count: z.coerce.number().min(1, "Must be at least 1."),
 });
 
 // Chapter schema no longer needs pdfPath
