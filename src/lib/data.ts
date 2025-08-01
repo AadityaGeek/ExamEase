@@ -7,7 +7,7 @@ export const getClasses = async (): Promise<Pick<Class, 'id' | 'name'>[]> => {
   const classesCol = collection(db, 'classes');
   const classSnapshot = await getDocs(classesCol);
   const classList = classSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Pick<Class, 'id' | 'name'>));
-  return classList.sort((a, b) => a.name.localeCompare(b.name));
+  return classList.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
 };
 
 export const getSubjects = async (classId: string): Promise<Pick<Subject, 'id' | 'name'>[]> => {
@@ -18,12 +18,12 @@ export const getSubjects = async (classId: string): Promise<Pick<Subject, 'id' |
     return subjectList.sort((a,b) => a.name.localeCompare(b.name));
 };
 
-export const getChapters = async (classId: string, subjectId: string): Promise<Pick<Chapter, 'id' | 'title'>[]> => {
+export const getChapters = async (classId: string, subjectId: string): Promise<Chapter[]> => {
     if (!classId || !subjectId) return [];
     const chaptersCol = collection(db, `classes/${classId}/subjects/${subjectId}/chapters`);
     const chapterSnapshot = await getDocs(chaptersCol);
-    const chapterList = chapterSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Pick<Chapter, 'id' | 'title'>));
-    return chapterList.sort((a,b) => a.title.localeCompare(b.title));
+    const chapterList = chapterSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Chapter));
+    return chapterList.sort((a,b) => a.title.localeCompare(b.title, undefined, { numeric: true }));
 };
 
 export const getChapterDetails = async (classId: string, subjectId: string, chapterId: string): Promise<Chapter | null> => {
@@ -36,7 +36,7 @@ export const getChapterDetails = async (classId: string, subjectId: string, chap
     return { id: chapterSnap.id, ...chapterSnap.data() } as Chapter;
 }
 
-export const createChapter = async (classId: string, subjectId: string, chapterData: { title: string; studyMaterial: string }): Promise<void> => {
+export const createChapter = async (classId: string, subjectId: string, chapterData: { title: string; pdfPath: string }): Promise<void> => {
     if (!classId || !subjectId) {
         throw new Error("Class ID and Subject ID are required to create a chapter.");
     }

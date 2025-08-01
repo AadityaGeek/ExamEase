@@ -1,11 +1,12 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // TODO: Replace with your actual Firebase project configuration
 const firebaseConfig = {
   projectId: "quizcraft-ai-5eed9",
   appId: "1:1005953144574:web:1b49be1ef517aa871fb7af",
-  storageBucket: "quizcraft-ai-5eed9.firebasestorage.app",
+  storageBucket: "quizcraft-ai-5eed9.appspot.com",
   apiKey: "AIzaSyAuQ942foT3ip7ZdFLy3nw-wsvOA0BAWqA",
   authDomain: "quizcraft-ai-5eed9.firebaseapp.com",
   messagingSenderId: "1005953144574"
@@ -14,5 +15,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { app, db };
+export { app, db, storage };

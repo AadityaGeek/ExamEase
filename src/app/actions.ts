@@ -1,12 +1,13 @@
+
 "use server";
 
 import { generateQuestions, type GenerateQuestionsInput, type GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
-import { getChapterDetails, getClassAndSubjectDetails } from "@/lib/data";
+import { getClassAndSubjectDetails } from "@/lib/data";
 import { quizFormSchema, type QuizFormSchema } from "@/lib/schemas";
 
 type ActionState = {
   success: boolean;
-  data: (GenerateQuestionsOutput & { title: string; subtitle: string }) | null;
+  data: (GenerateQuestionsOutput & { title: string; subtitle:string }) | null;
   error: string | null;
 };
 
@@ -23,7 +24,7 @@ export async function createQuiz(
     };
   }
 
-  const { classId, subjectId, chapterIds, questionTypes: questionsToGenerate } = validatedFields.data;
+  const { classId, subjectId, chapters: selectedChapters, questionTypes: questionsToGenerate } = validatedFields.data;
 
   try {
     const classSubjectDetails = await getClassAndSubjectDetails(classId, subjectId);
@@ -32,40 +33,24 @@ export async function createQuiz(
     }
     const { className, subjectName } = classSubjectDetails;
     
-    const chapters = await Promise.all(
-        chapterIds.map(id => getChapterDetails(classId, subjectId, id))
-    );
-
-    const validChapters = chapters.filter(Boolean);
-    if (validChapters.length === 0) {
-        throw new Error("Could not find chapter details.");
+    if (selectedChapters.length === 0) {
+        throw new Error("No chapters selected.");
     }
-
-    const studyMaterial = validChapters.map(c => c!.studyMaterial).join("\n\n---\n\n");
-    const chapterTitles = validChapters.map(c => c!.title).join(", ");
-
-    const numQuestions = Math.max(...questionsToGenerate.map(q => q.count));
-    const requestedQuestionTypes = questionsToGenerate.map(q => q.type);
+    
+    const chapterTitles = selectedChapters.map(c => c.title).join(", ");
 
     const aiInput: GenerateQuestionsInput = {
       class: className,
       subject: subjectName,
       chapter: chapterTitles,
-      studyMaterial: studyMaterial,
-      numQuestions: numQuestions,
-      questionTypes: requestedQuestionTypes,
+      questionTypes: questionsToGenerate,
     };
 
     const aiOutput = await generateQuestions(aiInput);
 
-    // Trim the questions to the requested count for each type
-    const trimmedQuestions: Record<string, string[]> = {};
-    for (const qType of questionsToGenerate) {
-        if (aiOutput.questions[qType.type]) {
-            trimmedQuestions[qType.type] = aiOutput.questions[qType.type].slice(0, qType.count);
-        }
+    if (!aiOutput || !aiOutput.questions || Object.keys(aiOutput.questions).length === 0) {
+        throw new Error("The AI failed to generate questions. Please try again with different options.");
     }
-    aiOutput.questions = trimmedQuestions;
 
     return {
       success: true,
@@ -78,10 +63,11 @@ export async function createQuiz(
     };
   } catch (error) {
     console.error("Error generating quiz:", error);
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred while generating questions.";
     return {
       success: false,
       data: null,
-      error: error instanceof Error ? error.message : "An unknown error occurred while generating questions.",
+      error: errorMessage,
     };
   }
 }

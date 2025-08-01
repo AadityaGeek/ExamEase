@@ -1,9 +1,9 @@
+
 "use client";
 
 import * as React from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { createQuiz } from "@/app/actions";
 import { type Chapter, type Class, type Subject, getClasses, getSubjects, getChapters } from "@/lib/data";
-import { QUESTION_TYPES, quizFormSchema, type QuizFormSchema, QuestionTypeSchema, type QuestionType } from "@/lib/schemas";
+import { QUESTION_TYPES, quizFormSchema, type QuizFormSchema } from "@/lib/schemas";
 import { QuestionDisplay } from "./question-display";
 import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
 import { Loader2 } from "lucide-react";
@@ -31,14 +31,14 @@ export function QuizForm() {
 
   const [classes, setClasses] = React.useState<Pick<Class, "id" | "name">[]>([]);
   const [subjects, setSubjects] = React.useState<Pick<Subject, "id" | "name">[]>([]);
-  const [chapters, setChapters] = React.useState<Pick<Chapter, "id" | "title">[]>([]);
+  const [chapters, setChapters] = React.useState<Chapter[]>([]);
   
   const form = useForm<QuizFormSchema>({
     resolver: zodResolver(quizFormSchema),
     defaultValues: {
       classId: "",
       subjectId: "",
-      chapterIds: [],
+      chapters: [],
       questionTypes: [],
     },
   });
@@ -64,7 +64,7 @@ export function QuizForm() {
   React.useEffect(() => {
     if (selectedClass) {
       form.setValue("subjectId", "");
-      form.setValue("chapterIds", []);
+      form.setValue("chapters", []);
       setSubjects([]);
       setChapters([]);
       getSubjects(selectedClass).then(setSubjects);
@@ -73,7 +73,7 @@ export function QuizForm() {
 
   React.useEffect(() => {
     if (selectedClass && selectedSubject) {
-      form.setValue("chapterIds", []);
+      form.setValue("chapters", []);
       setChapters([]);
       fetchChapters();
     }
@@ -147,7 +147,7 @@ export function QuizForm() {
                     <Separator />
                     <FormField
                       control={form.control}
-                      name="chapterIds"
+                      name="chapters"
                       render={() => (
                         <FormItem className="mt-8">
                           <div className="mb-4">
@@ -159,22 +159,23 @@ export function QuizForm() {
                               <FormField
                                 key={chapter.id}
                                 control={form.control}
-                                name="chapterIds"
-                                render={({ field }) => (
+                                name="chapters"
+                                render={({ field }) => {
+                                  return (
                                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                                     <FormControl>
                                       <Checkbox
-                                        checked={field.value?.includes(chapter.id)}
+                                        checked={field.value?.some(c => c.id === chapter.id)}
                                         onCheckedChange={(checked) => {
                                           return checked
-                                            ? field.onChange([...(field.value || []), chapter.id])
-                                            : field.onChange(field.value?.filter((value) => value !== chapter.id));
+                                            ? field.onChange([...(field.value || []), chapter])
+                                            : field.onChange(field.value?.filter((value) => value.id !== chapter.id));
                                         }}
                                       />
                                     </FormControl>
                                     <FormLabel className="font-normal">{chapter.title}</FormLabel>
                                   </FormItem>
-                                )}
+                                )}}
                               />
                             ))}
                           </div>

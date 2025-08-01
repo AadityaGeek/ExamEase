@@ -2,7 +2,7 @@
 export type Chapter = {
   id: string;
   title: string;
-  studyMaterial: string;
+  // pdfPath is no longer needed
 };
 
 export type Subject = {

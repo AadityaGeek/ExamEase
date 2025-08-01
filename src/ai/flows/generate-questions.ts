@@ -2,10 +2,10 @@
 'use server';
 
 /**
- * @fileOverview This file defines a Genkit flow for generating exam-style questions from study material.
+ * @fileOverview This file defines a Genkit flow for generating exam-style questions by searching for content online.
  *
- * The flow takes class, subject, chapter, question types, and the number of questions as input.
- * It then uses a language model to generate questions tailored to the CBSE pattern.
+ * The flow takes class, subject, chapter, and question types/counts as input.
+ * It then uses a language model to find relevant information and generate questions tailored to the CBSE pattern.
  *
  * @param {GenerateQuestionsInput} input - The input for the question generation flow.
  * @returns {Promise<GenerateQuestionsOutput>} - A promise that resolves to the generated questions.
@@ -14,18 +14,19 @@
 import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
+const QuestionRequestSchema = z.object({
+  type: z.enum(['MCQ', 'Fill in the Blanks', 'Short Answer', 'Long Answer', 'True/False']),
+  count: z.number(),
+});
+
 // Define the input schema for the generateQuestions flow
 const GenerateQuestionsInputSchema = z.object({
   class: z.string().describe('The class for which to generate questions (e.g., 10, 11, 12).'),
   subject: z.string().describe('The subject for which to generate questions (e.g., Science, Math).'),
-  chapter: z.string().describe('The chapter from which to generate questions.'),
+  chapter: z.string().describe('The chapter(s) for which to generate questions.'),
   questionTypes: z
-    .array(
-      z.enum(['MCQ', 'Fill in the Blanks', 'Short Answer', 'Long Answer', 'True/False'])
-    )
-    .describe('The types of questions to generate.'),
-  numQuestions: z.number().describe('The number of questions to generate for each type.'),
-  studyMaterial: z.string().describe('The extracted text content from the study material PDF.'),
+    .array(QuestionRequestSchema)
+    .describe('The types of questions to generate and the count for each type.'),
 });
 
 export type GenerateQuestionsInput = z.infer<typeof GenerateQuestionsInputSchema>;
@@ -34,7 +35,7 @@ export type GenerateQuestionsInput = z.infer<typeof GenerateQuestionsInputSchema
 const GenerateQuestionsOutputSchema = z.object({
   questions: z.record(
     z.array(z.string())
-  ).describe('Generated questions, grouped by question type.'),
+  ).describe('Generated questions, grouped by question type. The keys of this record should be the question types from the input.'),
 });
 
 export type GenerateQuestionsOutput = z.infer<typeof GenerateQuestionsOutputSchema>;
@@ -49,28 +50,25 @@ export async function generateQuestions(input: GenerateQuestionsInput): Promise<
 const generateQuestionsPrompt = ai.definePrompt({
   name: 'generateQuestionsPrompt',
   input: {schema: GenerateQuestionsInputSchema},
-  output: {schema: GenerateQuestionsOutputSchema},
-  prompt: `You are an experienced educator specializing in creating exam-style questions for the CBSE curriculum. Generate questions based on the provided study material, tailored to the specified class, subject, and chapter.
+  prompt: `You are an expert educator who creates exam-style questions for the Indian CBSE curriculum.
+Your task is to generate questions based on the provided class, subject, and chapter. You will use your own knowledge and search online for the most relevant and accurate information for the topics.
 
 Class: {{{class}}}
 Subject: {{{subject}}}
-Chapter: {{{chapter}}}
-Study Material: {{{studyMaterial}}}
+Chapter(s): {{{chapter}}}
 
-Generate {{{numQuestions}}} questions for each of the following question types:
+Please generate questions for the following types and counts:
 {{#each questionTypes}}
-- {{{this}}}
+- Generate exactly {{this.count}} questions for the type: "{{this.type}}"
 {{/each}}
 
-Ensure the questions are exam-oriented, concept-based, and relevant to the study material. Structure the output as a JSON object where the keys are the question types and the values are arrays of the generated questions for each type.
+Ensure the questions are strictly exam-oriented, concept-based, and directly relevant to the topics covered in the specified chapter(s) for the given class and subject under the CBSE board.
 
-Output format should be a JSON object of the form:
-{
-  "MCQ": ["MCQ 1", "MCQ 2", ...],
-  "Fill in the Blanks": ["Fill in the Blank 1", "Fill in the Blank 2", ...],
-  ...
-}
-`, 
+VERY IMPORTANT: Your response MUST be a single, valid JSON object formatted as a string. Do not include any text or formatting before or after the JSON object.
+The JSON object must have a single key called "questions". The value of "questions" should be an object where each key is a question type (e.g., "MCQ", "Short Answer") and the value is an array of strings, where each string is a generated question.
+
+For each type, you MUST generate the exact number of questions specified. Do not generate more or fewer.
+`,
 });
 
 // Define the Genkit flow for generating questions
@@ -81,7 +79,34 @@ const generateQuestionsFlow = ai.defineFlow(
     outputSchema: GenerateQuestionsOutputSchema,
   },
   async input => {
-    const {output} = await generateQuestionsPrompt(input);
-    return output!;
+    const response = await generateQuestionsPrompt(input);
+    const textResponse = response.text;
+
+    try {
+      // The AI might sometimes wrap the JSON in ```json ... ``` or add other text.
+      // This regex looks for the first '{' and the last '}' to extract the JSON object.
+      const jsonMatch = textResponse.match(/{[\s\S]*}/);
+      
+      if (!jsonMatch) {
+        throw new Error("No valid JSON object found in the AI's response.");
+      }
+
+      const jsonString = jsonMatch[0];
+      const parsedJson = JSON.parse(jsonString);
+      
+      // Validate the parsed JSON against our Zod schema
+      const validationResult = GenerateQuestionsOutputSchema.safeParse(parsedJson);
+      
+      if (!validationResult.success) {
+        console.error("AI output failed Zod validation:", validationResult.error);
+        throw new Error("The AI returned data in an unexpected format. Please try again.");
+      }
+      
+      return validationResult.data;
+    } catch (error) {
+      console.error("Failed to parse JSON response from AI:", error);
+      console.error("Raw AI response was:", textResponse);
+      throw new Error("There was an issue processing the AI's response. Please try again.");
+    }
   }
 );
