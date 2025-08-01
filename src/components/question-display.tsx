@@ -1,3 +1,4 @@
+
 "use client";
 
 import * as React from "react";
@@ -33,7 +34,7 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
 
   if (questionTypesWithContent.length === 0) {
     return (
-      <Card className="w-full max-w-3xl mx-auto shadow-lg">
+      <Card className="w-full max-w-4xl mx-auto shadow-lg print:shadow-none">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">No Questions Generated</CardTitle>
           <CardDescription>
@@ -45,35 +46,35 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
   }
 
   return (
-    <Card className="w-full max-w-3xl mx-auto shadow-lg">
+    <Card className="w-full max-w-4xl mx-auto shadow-lg print:shadow-none">
       <CardHeader>
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <CardTitle className="font-headline text-2xl">{title}</CardTitle>
-                <CardDescription>{subtitle}</CardDescription>
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div className="text-center md:text-left flex-1">
+                <CardTitle className="font-headline text-3xl md:text-4xl">{title}</CardTitle>
+                <CardDescription className="mt-2 text-base">{subtitle}</CardDescription>
             </div>
-            <Button onClick={handleDownload} variant="outline">
+            <Button onClick={handleDownload} variant="outline" className="print:hidden">
                 <Download className="mr-2 h-4 w-4" />
                 Download PDF
             </Button>
         </div>
       </CardHeader>
       <CardContent>
-        <Accordion type="multiple" defaultValue={questionTypesWithContent} className="w-full">
+        <Accordion type="multiple" defaultValue={questionTypesWithContent} className="w-full space-y-4">
           {questionTypesWithContent.map((type) => {
             const Icon = iconMap[type] || PencilLine;
             return (
-              <AccordionItem value={type} key={type}>
-                <AccordionTrigger className="text-lg hover:no-underline">
+              <AccordionItem value={type} key={type} className="border rounded-lg px-4 bg-card">
+                <AccordionTrigger className="text-xl font-semibold hover:no-underline">
                   <div className="flex items-center gap-3">
-                    <Icon className="h-5 w-5 text-primary" />
+                    <Icon className="h-6 w-6 text-primary" />
                     <span>{type} ({questionsData.questions[type].length})</span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <ol className="list-decimal list-inside space-y-4 pl-4 text-base">
+                  <ol className="list-decimal list-inside space-y-5 pl-4 text-base md:text-lg">
                     {questionsData.questions[type].map((question, index) => (
-                      <li key={index} className="leading-relaxed">{question}</li>
+                      <li key={index} className="leading-relaxed pl-2 whitespace-pre-line">{question}</li>
                     ))}
                   </ol>
                 </AccordionContent>

@@ -5,6 +5,7 @@ import * as React from "react";
 import { useForm, Controller, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,16 +19,12 @@ import { useToast } from "@/hooks/use-toast";
 import { createQuiz } from "@/app/actions";
 import { type Chapter, type Class, type Subject, getClasses, getSubjects, getChapters } from "@/lib/data";
 import { QUESTION_TYPES, quizFormSchema, type QuizFormSchema } from "@/lib/schemas";
-import { QuestionDisplay } from "./question-display";
-import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
 import { Loader2 } from "lucide-react";
-
-type GeneratedQuizData = GenerateQuestionsOutput & { title: string; subtitle: string };
 
 export function QuizForm() {
   const { toast } = useToast();
+  const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
-  const [generatedQuiz, setGeneratedQuiz] = React.useState<GeneratedQuizData | null>(null);
 
   const [classes, setClasses] = React.useState<Pick<Class, "id" | "name">[]>([]);
   const [subjects, setSubjects] = React.useState<Pick<Subject, "id" | "name">[]>([]);
@@ -80,12 +77,12 @@ export function QuizForm() {
   }, [selectedClass, selectedSubject, form, fetchChapters]);
 
   const onSubmit = (data: QuizFormSchema) => {
-    setGeneratedQuiz(null);
     startTransition(async () => {
       const result = await createQuiz(data);
       if (result.success && result.data) {
-        setGeneratedQuiz(result.data);
+        sessionStorage.setItem("quizData", JSON.stringify(result.data));
         toast({ title: "Success!", description: "Your questions have been generated." });
+        router.push("/quiz");
       } else {
         toast({ variant: "destructive", title: "Error", description: result.error });
       }
@@ -253,23 +250,6 @@ export function QuizForm() {
           </Form>
         </CardContent>
       </Card>
-      
-      <AnimatePresence>
-        {generatedQuiz && (
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              className="mt-12"
-            >
-              <QuestionDisplay 
-                questionsData={generatedQuiz} 
-                title={generatedQuiz.title} 
-                subtitle={generatedQuiz.subtitle}
-              />
-            </motion.div>
-        )}
-      </AnimatePresence>
     </>
   );
 }

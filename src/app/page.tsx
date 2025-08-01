@@ -1,7 +1,6 @@
 import { QuizForm } from "@/components/quiz-form";
 import { Bot } from "lucide-react";
 import { Footer } from "@/components/footer";
-import Link from "next/link";
 
 export default function Home() {
   return (

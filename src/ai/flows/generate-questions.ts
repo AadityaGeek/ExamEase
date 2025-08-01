@@ -1,3 +1,4 @@
+
 // src/ai/flows/generate-questions.ts
 'use server';
 
@@ -65,8 +66,8 @@ Please generate questions for the following types and counts:
 Ensure the questions are strictly exam-oriented, concept-based, and directly relevant to the topics covered in the specified chapter(s) for the given class and subject under the CBSE board.
 
 SPECIAL INSTRUCTIONS:
-- For 'MCQ' (Multiple Choice Questions), the question and its options (e.g., A, B, C, D) MUST be on the same line and included in a single string.
-Example: "Which of the following is a noble gas? A. Oxygen B. Nitrogen C. Argon D. Carbon Dioxide"
+- For 'MCQ' (Multiple Choice Questions), the question should be on the first line, and each option (e.g., A, B, C, D) must be on a new line with indentation. Use newline characters and spaces to format it.
+Example: "Which of the following is a noble gas?\\n  A. Oxygen\\n  B. Nitrogen\\n  C. Argon\\n  D. Carbon Dioxide"
 
 VERY IMPORTANT: Your response MUST be a single, valid JSON object formatted as a string. Do not include any text or formatting before or after the JSON object.
 The JSON object must have a single key called "questions". The value of "questions" should be an object where each key is a question type (e.g., "MCQ", "Short Answer") and the value is an array of strings, where each string is a generated question.
@@ -114,3 +115,4 @@ const generateQuestionsFlow = ai.defineFlow(
     }
   }
 );
+
