@@ -50,7 +50,12 @@ export function QuizForm() {
 
   const selectedClass = form.watch("classId");
   const selectedSubject = form.watch("subjectId");
-  const selectedQuestionTypes = form.watch("questionTypes").map(q => q.type);
+  
+  const fetchChapters = React.useCallback(async () => {
+    if (selectedClass && selectedSubject) {
+      getChapters(selectedClass, selectedSubject).then(setChapters);
+    }
+  }, [selectedClass, selectedSubject]);
 
   React.useEffect(() => {
     getClasses().then(setClasses);
@@ -70,9 +75,9 @@ export function QuizForm() {
     if (selectedClass && selectedSubject) {
       form.setValue("chapterIds", []);
       setChapters([]);
-      getChapters(selectedClass, selectedSubject).then(setChapters);
+      fetchChapters();
     }
-  }, [selectedClass, selectedSubject, form]);
+  }, [selectedClass, selectedSubject, form, fetchChapters]);
 
   const onSubmit = (data: QuizFormSchema) => {
     setGeneratedQuiz(null);
@@ -201,7 +206,7 @@ export function QuizForm() {
                                         checked={isSelected}
                                         onCheckedChange={(checked) => {
                                             if (checked) {
-                                                append({ type, count: 5 });
+                                                append({ type, count: 10 });
                                             } else {
                                                 const idxToRemove = fields.findIndex(f => f.type === type);
                                                 if (idxToRemove !== -1) remove(idxToRemove);

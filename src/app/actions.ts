@@ -2,7 +2,7 @@
 
 import { generateQuestions, type GenerateQuestionsInput, type GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
 import { getChapterDetails, getClassAndSubjectDetails } from "@/lib/data";
-import { quizFormSchema, type QuizFormSchema, type QuestionType } from "@/lib/schemas";
+import { quizFormSchema, type QuizFormSchema } from "@/lib/schemas";
 
 type ActionState = {
   success: boolean;

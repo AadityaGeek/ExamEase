@@ -1,7 +1,7 @@
 
 import { db } from './firebase';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
-import type { Class, Subject, Chapter } from './types';
+import { collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
+import type { Chapter, Class, Subject } from './types';
 
 export const getClasses = async (): Promise<Pick<Class, 'id' | 'name'>[]> => {
   const classesCol = collection(db, 'classes');
@@ -35,6 +35,14 @@ export const getChapterDetails = async (classId: string, subjectId: string, chap
     }
     return { id: chapterSnap.id, ...chapterSnap.data() } as Chapter;
 }
+
+export const createChapter = async (classId: string, subjectId: string, chapterData: { title: string; studyMaterial: string }): Promise<void> => {
+    if (!classId || !subjectId) {
+        throw new Error("Class ID and Subject ID are required to create a chapter.");
+    }
+    const chaptersCol = collection(db, `classes/${classId}/subjects/${subjectId}/chapters`);
+    await addDoc(chaptersCol, chapterData);
+};
 
 export const getClassAndSubjectDetails = async (classId: string, subjectId: string): Promise<{className: string, subjectName: string} | null> => {
     if (!classId || !subjectId) return null;
