@@ -1,7 +1,40 @@
 
-import type { Class } from './types';
+import { db } from './firebase';
+import { collection, doc, setDoc, writeBatch } from 'firebase/firestore';
+import { MOCK_CLASSES } from './mock-data-for-seed';
 
-export const MOCK_CLASSES: Class[] = [
+async function seedDatabase() {
+  console.log('Starting to seed database...');
+  const batch = writeBatch(db);
+
+  for (const classData of MOCK_CLASSES) {
+    const { subjects, ...classDocData } = classData;
+    const classRef = doc(db, 'classes', classDocData.id);
+    batch.set(classRef, { name: classDocData.name });
+
+    for (const subjectData of subjects) {
+      const { chapters, ...subjectDocData } = subjectData;
+      const subjectRef = doc(db, `classes/${classDocData.id}/subjects`, subjectDocData.id);
+      batch.set(subjectRef, { name: subjectDocData.name });
+
+      for (const chapterData of chapters) {
+        const chapterRef = doc(db, `classes/${classDocData.id}/subjects/${subjectDocData.id}/chapters`, chapterData.id);
+        batch.set(chapterRef, chapterData);
+      }
+    }
+  }
+
+  try {
+    await batch.commit();
+    console.log('Database seeded successfully!');
+  } catch (error) {
+    console.error('Error seeding database: ', error);
+  }
+}
+
+// We need to create a temporary mock data file for the seed script to work.
+// I will remove this file in the next turn.
+const MOCK_CLASSES_TEMP = [
   {
     id: "10",
     name: "Class 10",
@@ -40,3 +73,36 @@ export const MOCK_CLASSES: Class[] = [
     ]
   }
 ];
+
+const MOCK_DATA = { MOCK_CLASSES: MOCK_CLASSES_TEMP };
+
+async function seedDatabaseWithData() {
+    console.log('Starting to seed database...');
+    const batch = writeBatch(db);
+
+    for (const classData of MOCK_DATA.MOCK_CLASSES) {
+        const { subjects, ...classDocData } = classData;
+        const classRef = doc(db, 'classes', classDocData.id);
+        batch.set(classRef, { name: classDocData.name });
+
+        for (const subjectData of subjects) {
+            const { chapters, ...subjectDocData } = subjectData;
+            const subjectRef = doc(db, `classes/${classDocData.id}/subjects`, subjectDocData.id);
+            batch.set(subjectRef, { name: subjectDocData.name });
+
+            for (const chapterData of chapters) {
+                const chapterRef = doc(db, `classes/${classDocData.id}/subjects/${subjectDocData.id}/chapters`, chapterData.id);
+                batch.set(chapterRef, chapterData);
+            }
+        }
+    }
+
+    try {
+        await batch.commit();
+        console.log('Database seeded successfully!');
+    } catch (error) {
+        console.error('Error seeding database: ', error);
+    }
+}
+
+seedDatabaseWithData();
