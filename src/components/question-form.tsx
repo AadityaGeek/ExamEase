@@ -16,12 +16,12 @@ import { Label } from "@/components/ui/label";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
-import { createQuiz } from "@/app/actions";
+import { createQuestionPaper } from "@/app/actions";
 import { type Chapter, type Class, type Subject, getClasses, getSubjects, getChapters } from "@/lib/data";
-import { QUESTION_TYPES, quizFormSchema, type QuizFormSchema } from "@/lib/schemas";
+import { QUESTION_TYPES, questionFormSchema, type QuestionFormSchema } from "@/lib/schemas";
 import { Loader2 } from "lucide-react";
 
-export function QuizForm() {
+export function QuestionForm() {
   const { toast } = useToast();
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
@@ -30,14 +30,15 @@ export function QuizForm() {
   const [subjects, setSubjects] = React.useState<Pick<Subject, "id" | "name">[]>([]);
   const [chapters, setChapters] = React.useState<Chapter[]>([]);
   
-  const form = useForm<QuizFormSchema>({
-    resolver: zodResolver(quizFormSchema),
+  const form = useForm<QuestionFormSchema>({
+    resolver: zodResolver(questionFormSchema),
     defaultValues: {
       classId: "",
       subjectId: "",
       chapters: [],
       questionTypes: [],
     },
+    mode: 'onChange',
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -45,44 +46,53 @@ export function QuizForm() {
     name: "questionTypes",
   });
 
-  const selectedClass = form.watch("classId");
-  const selectedSubject = form.watch("subjectId");
-  
+  const watchedClassId = form.watch("classId");
+  const watchedSubjectId = form.watch("subjectId");
+  const watchedChapters = form.watch("chapters");
+  const watchedQuestionTypes = form.watch("questionTypes");
+
+  const isFormSubmittable =
+    !!watchedClassId &&
+    !!watchedSubjectId &&
+    watchedChapters?.length > 0 &&
+    watchedQuestionTypes?.length > 0 &&
+    watchedQuestionTypes.every(q => q.count > 0);
+
   const fetchChapters = React.useCallback(async () => {
-    if (selectedClass && selectedSubject) {
-      getChapters(selectedClass, selectedSubject).then(setChapters);
+    if (watchedClassId && watchedSubjectId) {
+      getChapters(watchedClassId, watchedSubjectId).then(setChapters);
     }
-  }, [selectedClass, selectedSubject]);
+  }, [watchedClassId, watchedSubjectId]);
 
   React.useEffect(() => {
     getClasses().then(setClasses);
   }, []);
 
   React.useEffect(() => {
-    if (selectedClass) {
+    if (watchedClassId) {
       form.setValue("subjectId", "");
       form.setValue("chapters", []);
       setSubjects([]);
       setChapters([]);
-      getSubjects(selectedClass).then(setSubjects);
+      getSubjects(watchedClassId).then(setSubjects);
     }
-  }, [selectedClass, form]);
+  }, [watchedClassId, form]);
 
   React.useEffect(() => {
-    if (selectedClass && selectedSubject) {
+    if (watchedClassId && watchedSubjectId) {
       form.setValue("chapters", []);
       setChapters([]);
       fetchChapters();
     }
-  }, [selectedClass, selectedSubject, form, fetchChapters]);
+  }, [watchedClassId, watchedSubjectId, form, fetchChapters]);
 
-  const onSubmit = (data: QuizFormSchema) => {
+  const onSubmit = (data: QuestionFormSchema) => {
     startTransition(async () => {
-      const result = await createQuiz(data);
+      const result = await createQuestionPaper(data);
       if (result.success && result.data) {
-        sessionStorage.setItem("quizData", JSON.stringify(result.data));
+        sessionStorage.setItem("questionPaperData", JSON.stringify(result.data));
         toast({ title: "Success!", description: "Your questions have been generated." });
-        router.push("/quiz");
+        router.push("/questions");
       } else {
         toast({ variant: "destructive", title: "Error", description: result.error });
       }
@@ -90,7 +100,7 @@ export function QuizForm() {
   };
 
   const socialScienceChapters = React.useMemo(() => {
-    if (selectedSubject !== 'social-science') {
+    if (watchedSubjectId !== 'social-science') {
       return null;
     }
     const grouped: Record<string, Chapter[]> = {
@@ -111,14 +121,14 @@ export function QuizForm() {
       }
     });
     return grouped;
-  }, [chapters, selectedSubject]);
+  }, [chapters, watchedSubjectId]);
 
 
   return (
     <>
       <Card className="w-full max-w-3xl mx-auto shadow-lg">
         <CardHeader>
-          <CardTitle className="font-headline text-2xl">Create Your Quiz</CardTitle>
+          <CardTitle className="font-headline text-2xl">Create Your Question Paper</CardTitle>
           <CardDescription>Fill out the details below to generate your questions.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -149,7 +159,7 @@ export function QuizForm() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Subject</FormLabel>
-                      <Select onValueChange={field.onChange} value={field.value} disabled={!selectedClass}>
+                      <Select onValueChange={field.onChange} value={field.value} disabled={!watchedClassId}>
                         <FormControl>
                           <SelectTrigger><SelectValue placeholder="Select a subject" /></SelectTrigger>
                         </FormControl>
@@ -298,7 +308,7 @@ export function QuizForm() {
               </FormItem>
 
               <CardFooter className="px-0 pt-8">
-                <Button type="submit" disabled={isPending} className="w-full md:w-auto">
+                <Button type="submit" disabled={isPending || !isFormSubmittable} className="w-full md:w-auto">
                   {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isPending ? "Generating..." : "Generate Questions"}
                 </Button>
@@ -310,3 +320,5 @@ export function QuizForm() {
     </>
   );
 }
+
+    

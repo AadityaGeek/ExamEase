@@ -1,4 +1,4 @@
-import { QuizForm } from "@/components/quiz-form";
+import { QuestionForm } from "@/components/question-form";
 import { Bot } from "lucide-react";
 import { Footer } from "@/components/footer";
 
@@ -10,14 +10,14 @@ export default function Home() {
           <Bot className="h-10 w-10" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold font-headline text-primary">
-          QuizCraft AI
+          ExamEase
         </h1>
         <p className="text-muted-foreground mt-3 text-lg max-w-2xl mx-auto">
           Your personal AI-powered question paper generator. Turn your study materials into exam-style questions in seconds.
         </p>
       </header>
       <main>
-        <QuizForm />
+        <QuestionForm />
       </main>
       <Footer />
     </div>

@@ -11,7 +11,7 @@ export function Footer() {
 
     return (
         <footer className="text-center mt-12 text-sm text-muted-foreground">
-            <p>&copy; {year} QuizCraft AI. All rights reserved.</p>
+            <p>&copy; {year} ExamEase. All rights reserved.</p>
         </footer>
     );
 }

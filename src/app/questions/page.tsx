@@ -9,23 +9,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Home } from "lucide-react";
 
-type QuizData = GenerateQuestionsOutput & { title: string; subtitle: string };
+type QuestionPaperData = GenerateQuestionsOutput & { title: string; subtitle: string };
 
-export default function QuizPage() {
+export default function QuestionsPage() {
   const router = useRouter();
-  const [quizData, setQuizData] = React.useState<QuizData | null>(null);
+  const [questionPaperData, setQuestionPaperData] = React.useState<QuestionPaperData | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     try {
-      const storedData = sessionStorage.getItem("quizData");
+      const storedData = sessionStorage.getItem("questionPaperData");
       if (storedData) {
-        setQuizData(JSON.parse(storedData));
+        setQuestionPaperData(JSON.parse(storedData));
       } else {
-        setError("No quiz data found. Please generate a new quiz.");
+        setError("No question paper data found. Please generate a new paper.");
       }
     } catch (e) {
-      setError("Failed to load quiz data. Please try again.");
+      setError("Failed to load question paper data. Please try again.");
       console.error(e);
     }
   }, []);
@@ -49,7 +49,7 @@ export default function QuizPage() {
     );
   }
 
-  if (!quizData) {
+  if (!questionPaperData) {
     // You can add a loader here if you want
     return <div className="container mx-auto px-4 py-8 text-center">Loading...</div>;
   }
@@ -59,13 +59,13 @@ export default function QuizPage() {
        <div className="mb-8 flex justify-end">
             <Button onClick={() => router.push('/')} variant="outline">
                 <Home className="mr-2 h-4 w-4" />
-                Create New Quiz
+                Create New Paper
             </Button>
         </div>
       <QuestionDisplay 
-        questionsData={quizData} 
-        title={quizData.title} 
-        subtitle={quizData.subtitle}
+        questionsData={questionPaperData} 
+        title={questionPaperData.title} 
+        subtitle={questionPaperData.subtitle}
       />
     </div>
   );

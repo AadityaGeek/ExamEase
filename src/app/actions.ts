@@ -3,7 +3,7 @@
 
 import { generateQuestions, type GenerateQuestionsInput, type GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
 import { getClassAndSubjectDetails } from "@/lib/data";
-import { quizFormSchema, type QuizFormSchema } from "@/lib/schemas";
+import { questionFormSchema, type QuestionFormSchema } from "@/lib/schemas";
 
 type ActionState = {
   success: boolean;
@@ -11,10 +11,10 @@ type ActionState = {
   error: string | null;
 };
 
-export async function createQuiz(
-  formData: QuizFormSchema
+export async function createQuestionPaper(
+  formData: QuestionFormSchema
 ): Promise<ActionState> {
-  const validatedFields = quizFormSchema.safeParse(formData);
+  const validatedFields = questionFormSchema.safeParse(formData);
 
   if (!validatedFields.success) {
     return {
@@ -62,7 +62,7 @@ export async function createQuiz(
       error: null,
     };
   } catch (error) {
-    console.error("Error generating quiz:", error);
+    console.error("Error generating question paper:", error);
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred while generating questions.";
     return {
       success: false,
