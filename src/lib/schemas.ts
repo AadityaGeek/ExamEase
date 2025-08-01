@@ -1,11 +1,22 @@
 
 import { z } from "zod";
 
-export const QUESTION_TYPES = ['MCQ', 'Fill in the Blanks', 'Short Answer', 'Long Answer', 'True/False'] as const;
-export const QuestionTypeSchema = z.enum(QUESTION_TYPES);
+export const QUESTION_TYPES = [
+    { id: 'mcq', name: 'MCQ' },
+    { id: 'fill-in-the-blanks', name: 'Fill in the Blanks' },
+    { id: 'short-answer', name: 'Short Answer' },
+    { id: 'long-answer', name: 'Long Answer' },
+    { id: 'true-false', name: 'True/False' },
+] as const;
+
+
+const questionTypeNames = QUESTION_TYPES.map(t => t.name);
+
+export const QuestionTypeSchema = z.enum(questionTypeNames as [string, ...string[]]);
 export type QuestionType = z.infer<typeof QuestionTypeSchema>;
 
 const questionTypeCountSchema = z.object({
+    id: z.string(),
     type: QuestionTypeSchema,
     count: z.coerce.number().min(1, "Must be at least 1."),
 });

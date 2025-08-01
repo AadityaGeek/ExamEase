@@ -1,8 +1,8 @@
 
-"use client";
+      "use client";
 
 import * as React from "react";
-import { useForm, Controller, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { createQuestionPaper } from "@/app/actions";
@@ -29,7 +29,7 @@ export function QuestionForm() {
   const [classes, setClasses] = React.useState<Pick<Class, "id" | "name">[]>([]);
   const [subjects, setSubjects] = React.useState<Pick<Subject, "id" | "name">[]>([]);
   const [chapters, setChapters] = React.useState<Chapter[]>([]);
-  
+
   const form = useForm<QuestionFormSchema>({
     resolver: zodResolver(questionFormSchema),
     defaultValues: {
@@ -38,26 +38,12 @@ export function QuestionForm() {
       chapters: [],
       questionTypes: [],
     },
-    mode: 'onChange',
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "questionTypes",
   });
 
   const watchedClassId = form.watch("classId");
   const watchedSubjectId = form.watch("subjectId");
-  const watchedChapters = form.watch("chapters");
-  const watchedQuestionTypes = form.watch("questionTypes");
-
-  const isFormSubmittable =
-    !!watchedClassId &&
-    !!watchedSubjectId &&
-    watchedChapters?.length > 0 &&
-    watchedQuestionTypes?.length > 0 &&
-    watchedQuestionTypes.every(q => q.count > 0);
-
+  const formValues = form.watch();
+  
   const fetchChapters = React.useCallback(async () => {
     if (watchedClassId && watchedSubjectId) {
       getChapters(watchedClassId, watchedSubjectId).then(setChapters);
@@ -86,9 +72,9 @@ export function QuestionForm() {
     }
   }, [watchedClassId, watchedSubjectId, form, fetchChapters]);
 
-  const onSubmit = (data: QuestionFormSchema) => {
+  const onSubmit = (formData: QuestionFormSchema) => {
     startTransition(async () => {
-      const result = await createQuestionPaper(data);
+      const result = await createQuestionPaper(formData);
       if (result.success && result.data) {
         sessionStorage.setItem("questionPaperData", JSON.stringify(result.data));
         toast({ title: "Success!", description: "Your questions have been generated." });
@@ -140,7 +126,7 @@ export function QuestionForm() {
                   name="classId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Class</FormLabel>
+                      <Label>Class</Label>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger><SelectValue placeholder="Select a class" /></SelectTrigger>
@@ -158,7 +144,7 @@ export function QuestionForm() {
                   name="subjectId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Subject</FormLabel>
+                      <Label>Subject</Label>
                       <Select onValueChange={field.onChange} value={field.value} disabled={!watchedClassId}>
                         <FormControl>
                           <SelectTrigger><SelectValue placeholder="Select a subject" /></SelectTrigger>
@@ -183,8 +169,8 @@ export function QuestionForm() {
                       render={() => (
                         <FormItem className="mt-8">
                           <div className="mb-4">
-                            <FormLabel className="text-base">Chapters</FormLabel>
-                            <FormDescription>Select one or more chapters to include.</FormDescription>
+                            <Label>Chapters</Label>
+                            <FormMessage className="ml-2" />
                           </div>
                           <div className="space-y-3">
                            {socialScienceChapters ? (
@@ -201,6 +187,7 @@ export function QuestionForm() {
                                           <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                                             <FormControl>
                                               <Checkbox
+                                                id={`chapter-${chapter.id}`}
                                                 checked={field.value?.some(c => c.id === chapter.id)}
                                                 onCheckedChange={(checked) => {
                                                   return checked
@@ -209,7 +196,7 @@ export function QuestionForm() {
                                                 }}
                                               />
                                             </FormControl>
-                                            <FormLabel className="font-normal">{chapter.title}</FormLabel>
+                                            <label htmlFor={`chapter-${chapter.id}`} className="font-normal cursor-pointer">{chapter.title}</label>
                                           </FormItem>
                                         )}
                                       />
@@ -228,6 +215,7 @@ export function QuestionForm() {
                                   <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                                     <FormControl>
                                       <Checkbox
+                                        id={`chapter-${chapter.id}`}
                                         checked={field.value?.some(c => c.id === chapter.id)}
                                         onCheckedChange={(checked) => {
                                           return checked
@@ -236,14 +224,13 @@ export function QuestionForm() {
                                         }}
                                       />
                                     </FormControl>
-                                    <FormLabel className="font-normal">{chapter.title}</FormLabel>
+                                    <label htmlFor={`chapter-${chapter.id}`} className="font-normal cursor-pointer">{chapter.title}</label>
                                   </FormItem>
                                 )}}
                               />
                             ))
                            )}
                           </div>
-                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -253,62 +240,65 @@ export function QuestionForm() {
 
               <Separator />
               
-              <FormItem className="mt-8">
-                <div className="mb-4">
-                    <FormLabel className="text-base">Question Types</FormLabel>
-                    <FormDescription>Choose question types and specify how many of each you need.</FormDescription>
-                </div>
-                <div className="space-y-4">
-                    {QUESTION_TYPES.map((type) => {
-                        const fieldIndex = fields.findIndex(f => f.type === type);
-                        const isSelected = fieldIndex !== -1;
-                        
+              <FormField
+                control={form.control}
+                name="questionTypes"
+                render={({ field }) => (
+                  <FormItem className="mt-8">
+                    <div className="mb-4">
+                      <Label className="text-base">Question Types</Label>
+                      <FormMessage className="ml-2" />
+                    </div>
+                    <div className="space-y-4">
+                      {QUESTION_TYPES.map((type) => {
+                        const isSelected = field.value.some((q) => q.id === type.id);
                         return (
-                            <motion.div key={type} layout className="flex flex-col space-y-2 p-3 bg-secondary/50 rounded-lg">
-                               <div className="flex items-center justify-between">
-                                  <FormLabel className="font-normal flex items-center space-x-2">
-                                    <Checkbox
-                                        checked={isSelected}
-                                        onCheckedChange={(checked) => {
-                                            if (checked) {
-                                                append({ type, count: 10 });
-                                            } else {
-                                                const idxToRemove = fields.findIndex(f => f.type === type);
-                                                if (idxToRemove !== -1) remove(idxToRemove);
-                                            }
-                                        }}
-                                    />
-                                    <span>{type}</span>
-                                  </FormLabel>
-                                  
-                                  <AnimatePresence>
-                                  {isSelected && (
-                                    <motion.div initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: 'auto' }} exit={{ opacity: 0, width: 0 }}>
-                                      <Controller
-                                          control={form.control}
-                                          name={`questionTypes.${fieldIndex}.count`}
-                                          render={({ field, fieldState }) => (
-                                              <div className="w-32">
-                                                  <Input type="number" {...field} className="h-8" />
-                                                  {fieldState.error && <p className="text-sm text-destructive mt-1">{fieldState.error.message}</p>}
-                                              </div>
-                                          )}
-                                      />
-                                    </motion.div>
-                                  )}
-                                  </AnimatePresence>
-                               </div>
-                            </motion.div>
+                          <motion.div key={type.id} layout className="flex flex-col space-y-2 p-3 bg-secondary/50 rounded-lg">
+                            <div className="flex items-center justify-between">
+                              <Label className="font-normal flex items-center space-x-2 cursor-pointer">
+                                <Checkbox
+                                  checked={isSelected}
+                                  onCheckedChange={(checked) => {
+                                    const currentValues = field.value || [];
+                                    if (checked) {
+                                      field.onChange([...currentValues, { id: type.id, type: type.name, count: 10 }]);
+                                    } else {
+                                      field.onChange(currentValues.filter((q) => q.id !== type.id));
+                                    }
+                                  }}
+                                />
+                                <span>{type.name}</span>
+                              </Label>
+                              <AnimatePresence>
+                                {isSelected && (
+                                  <motion.div initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: 'auto' }} exit={{ opacity: 0, width: 0 }}>
+                                    <Input
+                                          type="number"
+                                          value={field.value.find((q) => q.id === type.id)?.count || 0}
+                                          onChange={(e) => {
+                                            const newCount = parseInt(e.target.value, 10) || 0;
+                                            const newQuestionTypes = field.value.map((q) =>
+                                              q.id === type.id ? { ...q, count: newCount } : q
+                                            );
+                                            field.onChange(newQuestionTypes);
+                                          }}
+                                          className="h-8 w-32"
+                                        />
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          </motion.div>
                         );
-                    })}
-                </div>
-                <Controller name="questionTypes" control={form.control} render={({ fieldState }) => (
-                     fieldState.error && <p className="text-sm font-medium text-destructive mt-2">{fieldState.error.message}</p>
-                )} />
-              </FormItem>
+                      })}
+                    </div>
+                  </FormItem>
+                )}
+              />
+
 
               <CardFooter className="px-0 pt-8">
-                <Button type="submit" disabled={isPending || !isFormSubmittable} className="w-full md:w-auto">
+                <Button type="submit" disabled={isPending} className="w-full md:w-auto">
                   {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   {isPending ? "Generating..." : "Generate Questions"}
                 </Button>
@@ -316,9 +306,13 @@ export function QuestionForm() {
             </form>
           </Form>
         </CardContent>
+        <pre className="p-4 bg-muted text-xs">
+            {JSON.stringify(formValues, null, 2)}
+        </pre>
       </Card>
     </>
   );
 }
+    
 
     
