@@ -56,8 +56,8 @@ export default function QuestionsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-       <div className="mb-8 flex justify-end">
-            <Button onClick={() => router.push('/')} variant="outline">
+       <div className="mb-8 flex justify-center md:justify-end">
+            <Button onClick={() => router.push('/')} variant="outline" className="w-full md:w-auto">
                 <Home className="mr-2 h-4 w-4" />
                 Create New Paper
             </Button>

@@ -288,7 +288,7 @@ export function QuestionForm() {
                                   );
                                   field.onChange(newQuestionTypes);
                                 }}
-                                className="h-8 w-24"
+                                className="h-8 w-24 text-center"
                                 disabled={!isSelected}
                               />
                             </motion.div>
