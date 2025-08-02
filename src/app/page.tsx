@@ -2,7 +2,7 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowRight, Bot, BookOpen, BrainCircuit, Cloud, Cpu, Rocket, ShieldCheck, Target, Zap } from "lucide-react";
+import { ArrowRight, BookOpen, Bot, BrainCircuit, Cloud, Cpu, Rocket, ShieldCheck, Target, Zap } from "lucide-react";
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -41,36 +41,44 @@ export default function Home() {
   ];
 
   const aboutPoints = [
-    { icon: <Target className="h-6 w-6 text-primary" />, text: "AI-driven question generation tailored to your course" },
-    { icon: <BookOpen className="h-6 w-6 text-primary" />, text: "Support for multiple subjects and topics" },
-    { icon: <BrainCircuit className="h-6 w-6 text-primary" />, text: "Adaptive and intelligent exam creation" },
-    { icon: <ShieldCheck className="h-6 w-6 text-primary" />, text: "Secure, fast, and cloud-based access" },
-    { icon: <Rocket className="h-6 w-6 text-primary" />, text: "Helps you revise smarter, not harder" },
+    { icon: <Target className="h-6 w-6 text-primary shrink-0" />, text: "AI-driven question generation tailored to your course" },
+    { icon: <BookOpen className="h-6 w-6 text-primary shrink-0" />, text: "Support for multiple subjects and topics" },
+    { icon: <BrainCircuit className="h-6 w-6 text-primary shrink-0" />, text: "Adaptive and intelligent exam creation" },
+    { icon: <ShieldCheck className="h-6 w-6 text-primary shrink-0" />, text: "Secure, fast, and cloud-based access" },
+    { icon: <Rocket className="h-6 w-6 text-primary shrink-0" />, text: "Helps you revise smarter, not harder" },
+  ];
+
+  const steps = [
+    {
+      title: "Select Material",
+      description: "Choose your class, subject, and the chapters you want to focus on.",
+    },
+    {
+      title: "Customize Questions",
+      description: "Pick question types (MCQ, Short Answer, etc.) and specify the quantity for each.",
+    },
+    {
+      title: "Generate & Download",
+      description: "Our AI generates your paper, ready for download as a PDF or for online practice.",
+    }
   ];
 
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="relative h-[80vh] min-h-[500px] flex items-center justify-center text-center text-white">
-            <Image 
-                src="https://placehold.co/1920x1080.png" 
-                alt="Student interacting with a futuristic interface" 
-                layout="fill"
-                objectFit="cover"
-                className="z-0"
-                data-ai-hint="futuristic education interface"
-            />
+        <section className="relative flex items-center justify-center text-center text-white h-[70vh]">
+            <div className="absolute inset-0 bg-cover bg-center" style={{backgroundImage: "url('https://placehold.co/1920x1080.png')"}} data-ai-hint="futuristic education interface"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20 z-10"></div>
             <div className="relative z-20 container mx-auto px-4">
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tight">Transform the Way You Prepare for Exams</h1>
                 <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-white/90">AI-powered question generation tailored to your syllabus</p>
-                <div className="mt-8 flex justify-center gap-4">
-                    <Link href="/generate" className={cn(buttonVariants({ size: "lg" }))}>
+                <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <Link href="/generate" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
                         Get Started <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
-                    <Link href="#" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "bg-transparent text-white border-white/80 hover:bg-white/10")}>
-                        Watch Demo
+                    <Link href="#about" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "bg-transparent text-white border-white/80 hover:bg-white/10 w-full sm:w-auto")}>
+                        Learn More
                     </Link>
                 </div>
             </div>
@@ -94,7 +102,7 @@ export default function Home() {
                   ))}
                 </ul>
               </div>
-              <div>
+              <div className="order-first md:order-last">
                 <Image
                   src="https://placehold.co/600x400.png"
                   alt="Illustration of AI and education"
@@ -136,26 +144,20 @@ export default function Home() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold">Get Your Questions in 3 Simple Steps</h2>
             <div className="relative mt-12 max-w-4xl mx-auto">
-              <div className="absolute left-1/2 top-6 bottom-6 w-0.5 bg-border hidden md:block"></div>
-              <div className="grid md:grid-cols-3 gap-8 text-left">
-                {/* Step 1 */}
-                <div className="relative p-6 bg-card rounded-lg shadow-md border">
-                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold hidden md:flex">1</div>
-                  <h3 className="text-xl font-semibold">Select Material</h3>
-                  <p className="mt-2 text-muted-foreground">Choose your class, subject, and the chapters you want to focus on.</p>
-                </div>
-                 {/* Step 2 */}
-                <div className="relative p-6 bg-card rounded-lg shadow-md border mt-8 md:mt-0">
-                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold hidden md:flex">2</div>
-                  <h3 className="text-xl font-semibold">Customize Questions</h3>
-                  <p className="mt-2 text-muted-foreground">Pick question types (MCQ, Short Answer, etc.) and specify the quantity for each.</p>
-                </div>
-                 {/* Step 3 */}
-                <div className="relative p-6 bg-card rounded-lg shadow-md border mt-8 md:mt-0">
-                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 h-6 w-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold hidden md:flex">3</div>
-                  <h3 className="text-xl font-semibold">Generate & Download</h3>
-                  <p className="mt-2 text-muted-foreground">Our AI generates your paper, ready for download as a PDF or for online practice.</p>
-                </div>
+              <div className="absolute left-0 right-0 top-3 h-0.5 bg-border hidden md:block"></div>
+              <div className="md:grid md:grid-cols-3 gap-8 md:text-center space-y-8 md:space-y-0">
+                {steps.map((step, index) => (
+                   <div key={index} className="relative flex flex-col items-center">
+                      <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-6 h-6 bg-primary rounded-full hidden items-center justify-center text-primary-foreground font-bold z-10 md:flex">{index + 1}</div>
+                      <div className="flex items-center justify-center w-full mb-4 md:hidden">
+                         <div className="h-8 w-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground font-bold">{index + 1}</div>
+                      </div>
+                      <div className="p-6 bg-card rounded-lg shadow-md border w-full text-center">
+                        <h3 className="text-xl font-semibold md:mt-6">{step.title}</h3>
+                        <p className="mt-2 text-muted-foreground">{step.description}</p>
+                      </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -177,5 +179,3 @@ export default function Home() {
     </div>
   );
 }
-
-    

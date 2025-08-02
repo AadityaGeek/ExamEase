@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Github, Linkedin, Mail, Twitter } from "lucide-react";
+import { Github, Instagram, Linkedin, Mail, Twitter } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
@@ -14,30 +14,33 @@ export function Footer() {
     }, []);
 
     const socialLinks = [
-        { icon: <Mail />, href: "mailto:work.aadityakumar@gmail.com", "aria-label": "Email" },
-        { icon: <Linkedin />, href: "https://linkedin.com/in/aaditya-kumar-a60205247", "aria-label": "LinkedIn" },
-        { icon: <Github />, href: "https://github.com/aADiTya-1", "aria-label": "GitHub" },
-        { icon: <Twitter />, href: "https://twitter.com/aadityakumar_1", "aria-label": "Twitter" },
+        { icon: <Mail className="h-6 w-6"/>, href: "mailto:work.aadityakumar@gmail.com", "aria-label": "Email", target: "_self" },
+        { icon: <Linkedin className="h-6 w-6"/>, href: "https://www.linkedin.com/in/aadityakr/", "aria-label": "LinkedIn", target: "_blank" },
+        { icon: <Github className="h-6 w-6"/>, href: "https://github.com/AadityaGeek/", "aria-label": "GitHub", target: "_blank" },
+        { icon: <Instagram className="h-6 w-6"/>, href: "https://Instagram.com/aadityakr_/", "aria-label": "Instagram", target: "_blank" },
     ];
 
     return (
         <footer className="bg-card border-t py-8">
-            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-                <p className="text-sm text-muted-foreground mb-4 md:mb-0">
+            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
+                <p className="text-sm text-muted-foreground">
                     &copy; {year || new Date().getFullYear()} ExamEase. All rights reserved.
                 </p>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
                     {socialLinks.map((link) => (
-                        <Link key={link.href} href={link.href} passHref>
-                           <Button variant="ghost" size="icon" aria-label={link['aria-label']}>
+                        <Button key={link.href} variant="ghost" asChild className="p-2">
+                           <Link 
+                             href={link.href} 
+                             aria-label={link['aria-label']}
+                             target={link.target}
+                             rel={link.target === "_blank" ? "noopener noreferrer" : undefined}
+                           >
                              {link.icon}
-                           </Button>
-                        </Link>
+                           </Link>
+                        </Button>
                     ))}
                 </div>
             </div>
         </footer>
     );
 }
-
-    

@@ -85,11 +85,13 @@ export function QuestionForm() {
       if (result.success && result.data) {
         sessionStorage.setItem("questionPaperData", JSON.stringify(result.data));
         toast({ title: "Success!", description: "Your questions have been generated." });
-        router.push("/questions");
+        setTimeout(() => {
+            router.push("/questions");
+        }, 2000); // 2-second delay
       } else {
         toast({ variant: "destructive", title: "Error", description: result.error });
+        setReviewData(null);
       }
-      setReviewData(null);
     });
   };
 
