@@ -20,6 +20,7 @@ import { createQuestionPaper } from "@/app/actions";
 import { type Chapter, type Class, type Subject, getClasses, getSubjects, getChapters } from "@/lib/data";
 import { QUESTION_TYPES, questionFormSchema, type QuestionFormSchema } from "@/lib/schemas";
 import { Loader2 } from "lucide-react";
+import { ReviewDialog } from "./review-dialog";
 
 export function QuestionForm() {
   const { toast } = useToast();
@@ -29,6 +30,7 @@ export function QuestionForm() {
   const [classes, setClasses] = React.useState<Pick<Class, "id" | "name">[]>([]);
   const [subjects, setSubjects] = React.useState<Pick<Subject, "id" | "name">[]>([]);
   const [chapters, setChapters] = React.useState<Chapter[]>([]);
+  const [reviewData, setReviewData] = React.useState<QuestionFormSchema | null>(null);
 
   const form = useForm<QuestionFormSchema>({
     resolver: zodResolver(questionFormSchema),
@@ -72,8 +74,14 @@ export function QuestionForm() {
   }, [watchedClassId, watchedSubjectId, form, fetchChapters]);
 
   const onSubmit = (formData: QuestionFormSchema) => {
+    setReviewData(formData);
+  };
+  
+  const handleConfirm = () => {
+    if (!reviewData) return;
+
     startTransition(async () => {
-      const result = await createQuestionPaper(formData);
+      const result = await createQuestionPaper(reviewData);
       if (result.success && result.data) {
         sessionStorage.setItem("questionPaperData", JSON.stringify(result.data));
         toast({ title: "Success!", description: "Your questions have been generated." });
@@ -81,6 +89,7 @@ export function QuestionForm() {
       } else {
         toast({ variant: "destructive", title: "Error", description: result.error });
       }
+      setReviewData(null);
     });
   };
 
@@ -111,6 +120,19 @@ export function QuestionForm() {
 
   return (
     <>
+      {reviewData && (
+          <ReviewDialog
+            isOpen={!!reviewData}
+            onClose={() => setReviewData(null)}
+            onConfirm={handleConfirm}
+            formData={reviewData}
+            isPending={isPending}
+            classAndSubject={{
+              className: classes.find(c => c.id === reviewData.classId)?.name || '',
+              subjectName: subjects.find(s => s.id === reviewData.subjectId)?.name || '',
+            }}
+          />
+      )}
       <Card className="w-full max-w-3xl mx-auto shadow-lg">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Create Your Question Paper</CardTitle>
