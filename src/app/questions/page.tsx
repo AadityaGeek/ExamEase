@@ -7,7 +7,7 @@ import { QuestionDisplay } from "@/components/question-display";
 import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Home } from "lucide-react";
+import { Home, PlusCircle } from "lucide-react";
 
 type QuestionPaperData = GenerateQuestionsOutput & { title: string; subtitle: string };
 
@@ -39,9 +39,9 @@ export default function QuestionsPage() {
             <CardDescription>{error}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => router.push("/")}>
-                <Home className="mr-2 h-4 w-4" />
-                Return to Home
+            <Button onClick={() => router.push("/generate")}>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Create a New Paper
             </Button>
           </CardContent>
         </Card>
@@ -57,8 +57,8 @@ export default function QuestionsPage() {
   return (
     <div className="container mx-auto px-4 py-8">
        <div className="mb-8 flex justify-center md:justify-end">
-            <Button onClick={() => router.push('/')} variant="outline" className="w-full md:w-auto">
-                <Home className="mr-2 h-4 w-4" />
+            <Button onClick={() => router.push('/generate')} variant="outline" className="w-full md:w-auto">
+                <PlusCircle className="mr-2 h-4 w-4" />
                 Create New Paper
             </Button>
         </div>
