@@ -184,7 +184,7 @@ export function QuestionForm() {
                                         control={form.control}
                                         name="chapters"
                                         render={({ field }) => (
-                                          <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                          <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                                             <FormControl>
                                               <Checkbox
                                                 id={`chapter-${chapter.id}`}
@@ -212,7 +212,7 @@ export function QuestionForm() {
                                 name="chapters"
                                 render={({ field }) => {
                                   return (
-                                  <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                                     <FormControl>
                                       <Checkbox
                                         id={`chapter-${chapter.id}`}
