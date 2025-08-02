@@ -87,4 +87,4 @@ export const generatePdf = (
   const finalFilename = `${className}-${subjectName}-${nameSuffix}.pdf`;
 
   doc.save(finalFilename);
-};
+git };
