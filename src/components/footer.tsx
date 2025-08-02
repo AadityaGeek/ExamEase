@@ -2,7 +2,7 @@
 "use client";
 
 import * as React from "react";
-import { Github, Instagram, Linkedin, Mail, Twitter } from "lucide-react";
+import { Github, Instagram, Linkedin, Mail } from "lucide-react";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
@@ -23,9 +23,11 @@ export function Footer() {
     return (
         <footer className="bg-card border-t py-8">
             <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
-                <p className="text-sm text-muted-foreground">
-                    &copy; {year || new Date().getFullYear()} ExamEase. All rights reserved.
-                </p>
+                <div className="text-sm text-muted-foreground flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+                    <span>&copy; {year || new Date().getFullYear()} ExamEase. All rights reserved.</span>
+                    <span className="hidden sm:inline">|</span>
+                    <span>Designed by Aaditya</span>
+                </div>
                 <div className="flex items-center space-x-1">
                     {socialLinks.map((link) => (
                         <Button key={link.href} variant="ghost" asChild className="p-2">
