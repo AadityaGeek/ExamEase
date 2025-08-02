@@ -42,7 +42,6 @@ export function QuestionForm() {
 
   const watchedClassId = form.watch("classId");
   const watchedSubjectId = form.watch("subjectId");
-  const formValues = form.watch();
   
   const fetchChapters = React.useCallback(async () => {
     if (watchedClassId && watchedSubjectId) {
@@ -253,41 +252,46 @@ export function QuestionForm() {
                       {QUESTION_TYPES.map((type) => {
                         const isSelected = field.value.some((q) => q.id === type.id);
                         return (
-                          <motion.div key={type.id} layout className="flex flex-col space-y-2 p-3 bg-secondary/50 rounded-lg">
-                            <div className="flex items-center justify-between">
-                              <Label className="font-normal flex items-center space-x-2 cursor-pointer">
-                                <Checkbox
-                                  checked={isSelected}
-                                  onCheckedChange={(checked) => {
-                                    const currentValues = field.value || [];
-                                    if (checked) {
-                                      field.onChange([...currentValues, { id: type.id, type: type.name, count: 10 }]);
-                                    } else {
-                                      field.onChange(currentValues.filter((q) => q.id !== type.id));
-                                    }
-                                  }}
-                                />
-                                <span>{type.name}</span>
-                              </Label>
-                              <AnimatePresence>
-                                {isSelected && (
-                                  <motion.div initial={{ opacity: 0, width: 0 }} animate={{ opacity: 1, width: 'auto' }} exit={{ opacity: 0, width: 0 }}>
-                                    <Input
-                                          type="number"
-                                          value={field.value.find((q) => q.id === type.id)?.count || 0}
-                                          onChange={(e) => {
-                                            const newCount = parseInt(e.target.value, 10) || 0;
-                                            const newQuestionTypes = field.value.map((q) =>
-                                              q.id === type.id ? { ...q, count: newCount } : q
-                                            );
-                                            field.onChange(newQuestionTypes);
-                                          }}
-                                          className="h-8 w-32"
-                                        />
-                                  </motion.div>
-                                )}
-                              </AnimatePresence>
-                            </div>
+                          <motion.div
+                            key={type.id}
+                            layout
+                            className="flex flex-row items-center justify-between p-3 bg-secondary/50 rounded-lg"
+                          >
+                            <Label className="font-normal flex items-center space-x-2 cursor-pointer">
+                              <Checkbox
+                                checked={isSelected}
+                                onCheckedChange={(checked) => {
+                                  const currentValues = field.value || [];
+                                  if (checked) {
+                                    field.onChange([...currentValues, { id: type.id, type: type.name, count: 10 }]);
+                                  } else {
+                                    field.onChange(currentValues.filter((q) => q.id !== type.id));
+                                  }
+                                }}
+                              />
+                              <span>{type.name}</span>
+                            </Label>
+                            <motion.div
+                              animate={{
+                                opacity: isSelected ? 1 : 0,
+                              }}
+                              transition={{ duration: 0.2 }}
+                              className={!isSelected ? "invisible pointer-events-none" : ""}
+                            >
+                              <Input
+                                type="number"
+                                value={field.value.find((q) => q.id === type.id)?.count || 0}
+                                onChange={(e) => {
+                                  const newCount = parseInt(e.target.value, 10) || 0;
+                                  const newQuestionTypes = field.value.map((q) =>
+                                    q.id === type.id ? { ...q, count: newCount } : q
+                                  );
+                                  field.onChange(newQuestionTypes);
+                                }}
+                                className="h-8 w-24"
+                                disabled={!isSelected}
+                              />
+                            </motion.div>
                           </motion.div>
                         );
                       })}
@@ -306,9 +310,6 @@ export function QuestionForm() {
             </form>
           </Form>
         </CardContent>
-        <pre className="p-4 bg-muted text-xs">
-            {JSON.stringify(formValues, null, 2)}
-        </pre>
       </Card>
     </>
   );
