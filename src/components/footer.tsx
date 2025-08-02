@@ -22,13 +22,13 @@ export function Footer() {
 
     return (
         <footer className="bg-card border-t py-8">
-            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left space-y-4 md:space-y-0">
-                <div className="text-sm text-muted-foreground flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+            <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
+                <div className="text-sm text-muted-foreground flex flex-col sm:flex-row items-center gap-1 sm:gap-2 order-2 md:order-1">
                     <span>&copy; {year || new Date().getFullYear()} ExamEase. All rights reserved.</span>
                     <span className="hidden sm:inline">|</span>
                     <span>Designed by Aaditya</span>
                 </div>
-                <div className="flex items-center space-x-1">
+                <div className="flex items-center space-x-1 order-1 md:order-2">
                     {socialLinks.map((link) => (
                         <Button key={link.href} variant="ghost" asChild className="p-2">
                            <Link 
