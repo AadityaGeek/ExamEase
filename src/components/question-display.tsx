@@ -7,13 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { generatePdf } from "@/lib/pdf";
 import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
-import { Download, ListChecks, Baseline, PencilLine, FileText, Binary, Eye, EyeOff, Home, PlusCircle } from "lucide-react";
+import { Download, ListChecks, Baseline, PencilLine, FileText, Binary, Eye, EyeOff } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-
 
 interface QuestionDisplayProps {
   questionsData: GenerateQuestionsOutput;
@@ -30,7 +27,6 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisplayProps) {
-  const router = useRouter();
   const [showAnswers, setShowAnswers] = React.useState(false);
   const [includeAnswersInPdf, setIncludeAnswersInPdf] = React.useState(false);
 

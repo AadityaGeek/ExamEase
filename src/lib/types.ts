@@ -2,7 +2,6 @@
 export type Chapter = {
   id: string;
   title: string;
-  // pdfPath is no longer needed
 };
 
 export type Subject = {
