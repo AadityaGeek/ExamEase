@@ -69,9 +69,9 @@ export default function Home() {
         {/* Hero Section */}
         <section className="relative flex items-center justify-center text-center text-white h-[70vh]">
             <Image 
-                src="https://placehold.co/1920x1080.png"
-                alt="Futuristic education interface"
-                layout="fill"
+                src="/images/hero-background.jpg"
+                alt="Neural Network"
+                fill={true}
                 objectFit="cover"
                 className="absolute inset-0"
                 data-ai-hint="futuristic education interface"
@@ -111,7 +111,7 @@ export default function Home() {
               </div>
               <div className="order-first md:order-last">
                 <Image
-                  src="https://placehold.co/600x400.png"
+                  src="/images/about-us-image.jpg"
                   alt="Illustration of AI and education"
                   width={600}
                   height={400}
