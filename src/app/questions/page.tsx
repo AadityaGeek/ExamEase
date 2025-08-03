@@ -63,18 +63,6 @@ export default function QuestionsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-        <div className="w-full max-w-4xl mx-auto flex justify-between items-center mb-4">
-             <Button asChild variant="outline">
-                <Link href="/">
-                    <Home className="mr-2 h-4 w-4" />
-                    Home
-                </Link>
-            </Button>
-            <Button onClick={() => router.push('/generate')}>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Create New Paper
-            </Button>
-        </div>
       <QuestionDisplay 
         questionsData={questionPaperData} 
         title={questionPaperData.title} 

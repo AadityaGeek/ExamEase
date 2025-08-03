@@ -16,15 +16,6 @@ export default function GeneratePage() {
     <div className="relative min-h-screen w-full overflow-hidden">
        <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:32px_32px]"></div>
        <div className="container mx-auto px-4 py-8">
-        <div className="w-full flex justify-start mb-8">
-            <Button asChild variant="outline" className="bg-transparent hover:bg-primary hover:text-primary-foreground">
-                <Link href="/">
-                    <Home className="mr-2 h-4 w-4" />
-                    Home
-                </Link>
-            </Button>
-        </div>
-
         <main className="flex flex-col items-center justify-center space-y-12">
             <div className="flex flex-col items-center space-y-6 text-center max-w-2xl">
                  <Rocket className="h-12 w-12 text-primary" />

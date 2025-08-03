@@ -3,6 +3,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster"
 import { Footer } from '@/components/footer';
 import { Poppins } from 'next/font/google';
+import { Header } from '@/components/header';
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -10,8 +11,8 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: 'ExamEase AI - AI-Powered Question Paper Generator',
-  description: 'Generate high-quality, exam-oriented question papers for any subject in seconds with ExamEase AI. Perfect for students and educators.',
+  title: 'ExamEase - AI-Powered Question Paper Generator',
+  description: 'Generate high-quality, exam-oriented question papers for any subject in seconds with ExamEase. Perfect for students and educators.',
 };
 
 export default function RootLayout({
@@ -22,12 +23,13 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`${poppins.className} antialiased min-h-screen bg-background`}>
-        {children}
+        <Header />
+        <div className="flex-1">
+          {children}
+        </div>
         <Footer />
         <Toaster />
       </body>
     </html>
   );
 }
-
-    
