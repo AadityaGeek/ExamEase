@@ -84,7 +84,7 @@ export default function Home() {
                     <Link href="/generate" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto transition-all hover:-translate-y-0.5")}>
                         Get Started <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
-                    <Link href="#about" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "bg-transparent text-white border-white/80 hover:bg-white hover:text-primary w-full sm:w-auto transition-all hover:-translate-y-0.5")}>
+                    <Link href="/#about" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "bg-transparent text-white border-white/80 hover:bg-white hover:text-primary w-full sm:w-auto transition-all hover:-translate-y-0.5")}>
                         Learn More
                     </Link>
                 </div>
