@@ -63,7 +63,7 @@ export default function QuestionsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-        <div className="w-full max-w-4xl mx-auto flex justify-end gap-2 mb-4">
+        <div className="w-full max-w-4xl mx-auto flex justify-between items-center mb-4">
              <Button asChild variant="outline">
                 <Link href="/">
                     <Home className="mr-2 h-4 w-4" />
