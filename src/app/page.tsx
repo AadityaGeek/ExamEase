@@ -81,10 +81,10 @@ export default function Home() {
                 <h1 className="text-4xl md:text-6xl font-bold tracking-tight">Transform the Way You Prepare for Exams</h1>
                 <p className="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-white/90">AI-powered question generation tailored to your syllabus</p>
                 <div className="mt-8 flex flex-col sm:flex-row justify-center items-center gap-4">
-                    <Link href="/generate" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
+                    <Link href="/generate" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto transition-all hover:-translate-y-0.5")}>
                         Get Started <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
-                    <Link href="#about" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "bg-transparent text-white border-white/80 hover:bg-white/10 w-full sm:w-auto")}>
+                    <Link href="#about" className={cn(buttonVariants({ variant: "outline", size: "lg" }), "bg-transparent text-white border-white/80 hover:bg-white hover:text-primary w-full sm:w-auto transition-all hover:-translate-y-0.5")}>
                         Learn More
                     </Link>
                 </div>
@@ -132,7 +132,7 @@ export default function Home() {
             </p>
             <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {features.map((feature, index) => (
-                <Card key={index} className="text-left bg-card hover:shadow-xl transition-shadow duration-300">
+                <Card key={index} className="text-left bg-card hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5">
                   <CardHeader>
                     {feature.icon}
                     <CardTitle className="mt-4">{feature.title}</CardTitle>
@@ -154,18 +154,18 @@ export default function Home() {
                     <div className="absolute left-1/2 top-4 hidden h-[calc(100%-2rem)] w-0.5 -translate-x-1/2 bg-border md:block" aria-hidden="true"></div>
                     <div className="grid grid-cols-1 gap-y-12 md:gap-y-16">
                         {steps.map((step, index) => (
-                            <div key={index} className="relative flex flex-col items-center gap-y-4 md:flex-row md:justify-between">
-                                <div className="flex-shrink-0 w-12 h-12 bg-primary rounded-full text-primary-foreground font-bold text-xl z-10 flex items-center justify-center md:absolute md:left-1/2 md:-translate-x-1/2">
-                                    {index + 1}
-                                </div>
-                                <div className={`flex items-center md:w-1/2 ${index % 2 === 0 ? 'md:justify-start' : 'md:justify-end md:order-2'}`}>
-                                    <div className={`p-6 bg-card rounded-lg shadow-md border w-full text-center md:w-[calc(100%-4rem)] ${index % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
+                           <div key={index} className="relative flex flex-col items-center md:flex-row md:items-start md:justify-between">
+                                <div className={`flex flex-col items-center md:flex-row md:w-1/2 ${index % 2 === 0 ? 'md:order-1' : 'md:order-3 md:justify-end'}`}>
+                                    <div className="flex-shrink-0 order-1 md:order-none w-12 h-12 bg-primary rounded-full text-primary-foreground font-bold text-xl z-10 flex items-center justify-center md:absolute md:left-1/2 md:-translate-x-1/2">
+                                        {index + 1}
+                                    </div>
+                                    <div className={`p-6 order-2 md:order-none bg-card rounded-lg shadow-md border w-full text-center md:w-[calc(100%-4rem)] transition-all hover:shadow-lg hover:border-primary hover:-translate-y-0.5 ${index % 2 === 0 ? 'md:text-left' : 'md:text-right'}`}>
                                         <h3 className="text-xl font-semibold">{step.title}</h3>
                                         <p className="mt-2 text-muted-foreground">{step.description}</p>
                                     </div>
                                 </div>
-                                <div className="hidden md:block md:w-1/2"></div>
-                            </div>
+                                <div className="hidden md:block md:w-1/2 md:order-2"></div>
+                           </div>
                         ))}
                     </div>
                 </div>
@@ -178,7 +178,7 @@ export default function Home() {
             <h2 className="text-3xl md:text-4xl font-bold">Ready to ace your next exam?</h2>
             <p className="mt-4 text-lg text-muted-foreground">Start generating intelligent questions now.</p>
             <div className="mt-8">
-              <Link href="/generate" className={cn(buttonVariants({ size: "lg" }))}>
+              <Link href="/generate" className={cn(buttonVariants({ size: "lg" }), "transition-all hover:-translate-y-0.5")}>
                 Try ExamEase Now <Rocket className="ml-2 h-5 w-5" />
               </Link>
             </div>

@@ -7,10 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { generatePdf } from "@/lib/pdf";
 import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
-import { Download, ListChecks, Baseline, PencilLine, FileText, Binary, Eye, EyeOff } from "lucide-react";
+import { Download, ListChecks, Baseline, PencilLine, FileText, Binary, Eye, EyeOff, Home, PlusCircle } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 interface QuestionDisplayProps {
   questionsData: GenerateQuestionsOutput;
@@ -27,6 +30,7 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisplayProps) {
+  const router = useRouter();
   const [showAnswers, setShowAnswers] = React.useState(false);
   const [includeAnswersInPdf, setIncludeAnswersInPdf] = React.useState(false);
 
@@ -54,12 +58,12 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg print:shadow-none">
       <CardHeader>
-        <div className="flex flex-col md:flex-row md:justify-between gap-6 print:block">
-            <div className="text-center md:text-left">
+        <div className="flex flex-col md:flex-row justify-between gap-4 print:block">
+            <div className="flex-1 space-y-1">
                 <CardTitle className="font-headline text-2xl md:text-3xl">{title}</CardTitle>
-                <CardDescription className="mt-2 text-base">{subtitle}</CardDescription>
+                <CardDescription className="text-base">{subtitle}</CardDescription>
             </div>
-            <div className="flex flex-col items-center justify-center gap-4 print:hidden md:items-end">
+            <div className="flex flex-col gap-4 print:hidden md:items-end">
                 <div className="flex items-center space-x-2">
                     <Switch id="show-answers" checked={showAnswers} onCheckedChange={setShowAnswers} />
                     <Label htmlFor="show-answers" className="flex items-center gap-2 cursor-pointer">
@@ -67,12 +71,12 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
                         Show Answers
                     </Label>
                 </div>
-                <div className="flex flex-col items-center gap-2 w-full max-w-xs mx-auto md:max-w-none md:mx-0">
-                    <Button onClick={handleDownload} variant="outline" className="w-full">
+                <div className="flex flex-col items-start md:items-end gap-2 w-full">
+                    <Button onClick={handleDownload} variant="outline" className="w-full md:w-auto">
                         <Download className="mr-2 h-4 w-4" />
                         Download PDF
                     </Button>
-                    <div className="flex items-center space-x-2 mt-2">
+                    <div className="flex items-center space-x-2">
                         <Checkbox id="include-answers" checked={includeAnswersInPdf} onCheckedChange={(checked) => setIncludeAnswersInPdf(!!checked)} />
                         <Label htmlFor="include-answers" className="text-sm font-medium leading-none cursor-pointer">Include Answers in PDF</Label>
                     </div>
