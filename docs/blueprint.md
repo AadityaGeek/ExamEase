@@ -1,4 +1,4 @@
-# **App Name**: QuizCraft AI
+# **App Name**: ExamEase AI
 
 ## Core Features:
 
