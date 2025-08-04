@@ -19,11 +19,11 @@ ExamEase is an intelligent web application designed to revolutionize how student
 
 | Landing Page | Generation Form |
 | :---: | :---: |
-| <img src="https://placehold.co/600x400.png" alt="Landing Page" data-ai-hint="app screenshot"> | <img src="https://placehold.co/600x400.png" alt="Question Generation Form" data-ai-hint="app form screenshot"> |
+| <img src="public/images/landing-page.png" alt="Landing Page" data-ai-hint="app screenshot"> | <img src="/public/images/generation-form.png" alt="Question Generation Form" data-ai-hint="app form screenshot"> |
 
-| Generated Questions | Review Dialog |
+| Review Dialog | Generated Questions |
 | :---: | :---: |
-| <img src="https://placehold.co/600x400.png" alt="Generated Questions" data-ai-hint="app questions screenshot"> | <img src="https://placehold.co/600x400.png" alt="Review Dialog" data-ai-hint="app dialog screenshot"> |
+| <img src="/public/images/review-dialog.png" alt="Review Dialog" data-ai-hint="app dialog screenshot"> | <img src="/public/images/generated-questions.png" alt="Generated Questions" data-ai-hint="app questions screenshot"> |
 
 
 ## 🚀 How It Works
@@ -104,9 +104,9 @@ Contributions are welcome! If you have suggestions for improvements, please feel
 
 ## Contact
 
-[![Email](https://img.shields.io/badge/Email-work.aadityakumar@gmail.com-blue?style=for-the-badge&logo=gmail&logoColor=white)](mailto:work.aadityakumar@gmail.com)
-[![GitHub](https://img.shields.io/badge/GitHub-Aaditya%20Geek-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AadityaGeek/)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-aaditya%20kumar-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/aadityakr/)
+[![Email](https://img.shields.io/badge/Email-work.aadityakumar@gmail.com-blue?style=for-the-badge&logo=gmail&logoColor=white)](mailto:work.aadityakumar@gmail.com)<br>
+[![GitHub](https://img.shields.io/badge/GitHub-Aaditya%20Geek-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/AadityaGeek/)<br>
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-aaditya%20kumar-0A66C2?style=for-the-badge&logo=Linkedin&logoColor=white)](https://www.linkedin.com/in/aadityakr/)<br>
 [![Website](https://img.shields.io/badge/Website-Personal%20Portfolio%20Website-5570A1?style=for-the-badge&logo=globe&logoColor=white)](https://aadityageek.github.io/)
 
 ## 📄 License
