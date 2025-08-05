@@ -4,9 +4,10 @@ import { z } from "zod";
 export const QUESTION_TYPES = [
     { id: 'mcq', name: 'MCQ' },
     { id: 'fill-in-the-blanks', name: 'Fill in the Blanks' },
+    { id: 'true-false', name: 'True/False' },
+    { id: 'very-short-answer', name: 'Very Short Answer' },
     { id: 'short-answer', name: 'Short Answer' },
     { id: 'long-answer', name: 'Long Answer' },
-    { id: 'true-false', name: 'True/False' },
 ] as const;
 
 

@@ -7,8 +7,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { generatePdf } from "@/lib/pdf";
-import type { GenerateQuestionsOutput } from "@/ai/flows/generate-questions";
-import { Download, ListChecks, Baseline, PencilLine, FileText, Binary, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import type { GenerateQuestionsOutput, QuestionWithAnswer } from "@/ai/flows/generate-questions";
+import { Download, ListChecks, Baseline, PencilLine, FileText, Binary, Eye, EyeOff, ArrowLeft, MessageSquareQuote, Lightbulb } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,6 +25,7 @@ const iconMap: Record<string, React.ElementType> = {
   "Short Answer": PencilLine,
   "Long Answer": FileText,
   "True/False": Binary,
+  "Very Short Answer": MessageSquareQuote,
 };
 
 export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisplayProps) {
@@ -52,6 +53,24 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
       </Card>
     );
   }
+
+  const renderAnswer = (item: QuestionWithAnswer) => (
+    <>
+      <div className="mt-2 p-3 bg-secondary border-l-4 border-primary rounded-r-md">
+          <span className="font-semibold text-secondary-foreground">Answer: </span>
+          <span className="text-secondary-foreground whitespace-pre-line">{item.answer}</span>
+      </div>
+      {item.explanation && (
+        <div className="mt-2 p-3 bg-accent/20 border-l-4 border-accent rounded-r-md">
+          <div className="flex items-center font-semibold text-accent-foreground/80 mb-1">
+            <Lightbulb className="h-4 w-4 mr-2" />
+            <span>Explanation</span>
+          </div>
+          <p className="text-accent-foreground/90 whitespace-pre-line">{item.explanation}</p>
+        </div>
+      )}
+    </>
+  );
 
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-lg print:shadow-none">
@@ -100,15 +119,10 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
                 </AccordionTrigger>
                 <AccordionContent>
                   <ol className="list-decimal list-inside space-y-5 px-4 text-base md:text-lg">
-                    {questionsData.questions[type].map(({ question, answer }, index) => (
+                    {questionsData.questions[type].map((item, index) => (
                       <li key={index} className="leading-relaxed">
-                        <span className="whitespace-pre-line font-code">{question}</span>
-                         {showAnswers && (
-                            <div className="mt-2 p-3 bg-secondary border-l-4 border-primary rounded-r-md">
-                                <span className="font-semibold text-secondary-foreground">Answer: </span>
-                                <span className="text-secondary-foreground">{answer}</span>
-                            </div>
-                         )}
+                        <span className="whitespace-pre-line font-code">{item.question}</span>
+                         {showAnswers && renderAnswer(item)}
                       </li>
                     ))}
                   </ol>

@@ -13,10 +13,10 @@
  */
 
 import {ai} from '@/ai/genkit';
-import {z} from 'genkit';
+import {z} from 'zod';
 
 const QuestionRequestSchema = z.object({
-  type: z.enum(['MCQ', 'Fill in the Blanks', 'Short Answer', 'Long Answer', 'True/False']),
+  type: z.enum(['MCQ', 'Fill in the Blanks', 'Short Answer', 'Long Answer', 'True/False', 'Very Short Answer']),
   count: z.number(),
 });
 
@@ -32,10 +32,11 @@ const GenerateQuestionsInputSchema = z.object({
 
 export type GenerateQuestionsInput = z.infer<typeof GenerateQuestionsInputSchema>;
 
-// Define the schema for a single question with its answer
+// Define the schema for a single question with its answer and an optional explanation
 const QuestionWithAnswerSchema = z.object({
   question: z.string(),
   answer: z.string(),
+  explanation: z.string().optional(),
 });
 export type QuestionWithAnswer = z.infer<typeof QuestionWithAnswerSchema>;
 

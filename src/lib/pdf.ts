@@ -28,6 +28,7 @@ export const generatePdf = (
   const margin = 15;
   const maxWidth = doc.internal.pageSize.getWidth() - margin * 2;
   const answerColor = "#334155"; // Using a readable dark gray/slate color
+  const explanationColor = "#4b5563"; // A slightly lighter gray for explanations
 
   Object.entries(questionsData.questions).forEach(([type, questions]) => {
     if (questions.length === 0) return;
@@ -45,14 +46,24 @@ export const generatePdf = (
     doc.setFontSize(12);
     doc.setFont("helvetica", "normal");
 
-    questions.forEach(({ question, answer }, index) => {
+    questions.forEach(({ question, answer, explanation }, index) => {
       const questionText = `${index + 1}. ${question}`;
       const splitQuestion = doc.splitTextToSize(questionText, maxWidth);
-      
       const questionHeight = splitQuestion.length * 5;
-      const answerHeight = includeAnswers ? (doc.splitTextToSize(`Ans: ${answer}`, maxWidth - 5).length * 5) + 2 : 0;
+
+      let answerHeight = 0;
+      let explanationHeight = 0;
       
-      if (yPos + questionHeight + answerHeight > 280) {
+      if (includeAnswers) {
+          const splitAnswer = doc.splitTextToSize(`Ans: ${answer}`, maxWidth - 5);
+          answerHeight = (splitAnswer.length * 5) + 2;
+          if (explanation) {
+            const splitExplanation = doc.splitTextToSize(`Explanation: ${explanation}`, maxWidth - 5);
+            explanationHeight = (splitExplanation.length * 5) + 2;
+          }
+      }
+
+      if (yPos + questionHeight + answerHeight + explanationHeight > 280) {
         doc.addPage();
         yPos = 20;
       }
@@ -66,9 +77,21 @@ export const generatePdf = (
         const answerText = `Ans: ${answer}`;
         const splitAnswer = doc.splitTextToSize(answerText, maxWidth - 5); // Indent answer slightly
         doc.text(splitAnswer, margin + 5, yPos);
-        yPos += (splitAnswer.length * 5) + 5;
+        yPos += (splitAnswer.length * 5) + 2;
         doc.setTextColor("#000000"); // Reset color
         doc.setFont("helvetica", "normal");
+        
+        if (explanation) {
+            doc.setTextColor(explanationColor);
+            doc.setFont("helvetica", "italic");
+            const explanationText = `Explanation: ${explanation}`;
+            const splitExplanation = doc.splitTextToSize(explanationText, maxWidth-5);
+            doc.text(splitExplanation, margin + 5, yPos);
+            yPos += (splitExplanation.length * 5) + 2;
+            doc.setTextColor("#000000"); // Reset color
+            doc.setFont("helvetica", "normal");
+        }
+        yPos += 3;
       } else {
          yPos += 5;
       }
