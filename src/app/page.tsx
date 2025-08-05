@@ -2,7 +2,7 @@
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { ArrowRight, BookOpen, BrainCircuit, Cloud, Cpu, Rocket, ShieldCheck, Target, Zap, Bot } from "lucide-react";
+import { ArrowRight, BookOpen, BrainCircuit, Cloud, Cpu, Rocket, ShieldCheck, Target, Zap, Bot, Edit, CheckCircle } from "lucide-react";
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -41,11 +41,11 @@ export default function Home() {
   ];
 
   const aboutPoints = [
-    { icon: <Target className="h-6 w-6 text-primary shrink-0" />, text: "AI-driven question generation tailored to your course" },
-    { icon: <BookOpen className="h-6 w-6 text-primary shrink-0" />, text: "Support for multiple subjects and topics" },
-    { icon: <BrainCircuit className="h-6 w-6 text-primary shrink-0" />, text: "Adaptive and intelligent exam creation" },
-    { icon: <ShieldCheck className="h-6 w-6 text-primary shrink-0" />, text: "Secure, fast, and cloud-based access" },
-    { icon: <Rocket className="h-6 w-6 text-primary shrink-0" />, text: "Helps you revise smarter, not harder" },
+    { icon: <Target className="h-6 w-6 text-primary shrink-0" />, text: "Focus your revision on specific chapters for targeted learning." },
+    { icon: <Edit className="h-6 w-6 text-primary shrink-0" />, text: "Create diverse question papers with various formats like MCQs, Short Answers, and more." },
+    { icon: <CheckCircle className="h-6 w-6 text-primary shrink-0" />, text: "Receive high-quality, relevant questions that align with your curriculum." },
+    { icon: <BrainCircuit className="h-6 w-6 text-primary shrink-0" />, text: "Go beyond memorization by tackling questions that test true understanding." },
+    { icon: <Rocket className="h-6 w-6 text-primary shrink-0" />, text: "Accelerate your study sessions and prepare more effectively in less time." },
   ];
 
   const steps = [
@@ -98,7 +98,7 @@ export default function Home() {
               <div className="space-y-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-primary">What is ExamEase?</h2>
                 <p className="text-lg text-muted-foreground">
-                  ExamEase is an intelligent platform designed to revolutionize exam preparation for students and educators. We leverage the power of AI to create relevant, high-quality questions from your study materials, saving you time and helping you focus on what truly matters: learning.
+                  ExamEase is an intelligent platform designed to revolutionize exam preparation. It moves beyond simple question generation by leveraging cutting-edge AI to create contextually aware, high-quality questions tailored to your specific curriculum. Our goal is to provide a powerful tool that not only saves educators time but also helps students learn more effectively by focusing on understanding, not just memorization.
                 </p>
                 <ul className="space-y-3 pt-4">
                   {aboutPoints.map((point, index) => (
