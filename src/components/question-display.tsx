@@ -61,12 +61,12 @@ export function QuestionDisplay({ questionsData, title, subtitle }: QuestionDisp
           <span className="text-secondary-foreground whitespace-pre-line">{item.answer}</span>
       </div>
       {item.explanation && (
-        <div className="mt-2 p-3 bg-accent/20 border-l-4 border-accent rounded-r-md">
-          <div className="flex items-center font-semibold text-accent-foreground/80 mb-1">
-            <Lightbulb className="h-4 w-4 mr-2" />
+        <div className="mt-2 p-3 bg-secondary/80 border-l-4 border-accent rounded-r-md">
+          <div className="flex items-center font-semibold text-secondary-foreground mb-1">
+            <Lightbulb className="h-4 w-4 mr-2 text-accent" />
             <span>Explanation</span>
           </div>
-          <p className="text-accent-foreground/90 whitespace-pre-line">{item.explanation}</p>
+          <p className="text-muted-foreground whitespace-pre-line">{item.explanation}</p>
         </div>
       )}
     </>
