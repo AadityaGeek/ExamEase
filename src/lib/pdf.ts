@@ -15,6 +15,9 @@ export const generatePdf = (
     unit: "mm",
     format: "a4",
   });
+  
+  const margin = 15;
+  const maxWidth = doc.internal.pageSize.getWidth() - margin * 2;
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
@@ -22,11 +25,14 @@ export const generatePdf = (
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "normal");
-  doc.text(subtitle, 105, 30, { align: "center" });
+  // Manually split the subtitle to ensure it wraps correctly within margins
+  const splitSubtitle = doc.splitTextToSize(subtitle, maxWidth);
+  doc.text(splitSubtitle, 105, 30, { align: "center" });
 
-  let yPos = 45;
-  const margin = 15;
-  const maxWidth = doc.internal.pageSize.getWidth() - margin * 2;
+  // Calculate the height of the subtitle and adjust the starting Y position
+  const subtitleHeight = splitSubtitle.length * 7;
+  let yPos = 30 + subtitleHeight + 5;
+
   const answerColor = "#334155"; // Using a readable dark gray/slate color
   const explanationColor = "#4b5563"; // A slightly lighter gray for explanations
 
@@ -110,4 +116,4 @@ export const generatePdf = (
   const finalFilename = `${className}-${subjectName}-${nameSuffix}.pdf`;
 
   doc.save(finalFilename);
-git };
+};
