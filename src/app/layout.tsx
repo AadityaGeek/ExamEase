@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: 'ExamEase',
     images: [
       {
-        url: 'public/images/og-image.png',
+        url: '/images/og-image.png',
         width: 1200,
         height: 630,
         alt: 'ExamEase - AI-Powered Question Paper Generator',
