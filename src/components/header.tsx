@@ -11,7 +11,7 @@ import { Button, buttonVariants } from "./ui/button";
 const navLinks = [
     { href: "/", label: "Home", icon: <Home /> },
     { href: "/generate", label: "Generate", icon: <Rocket /> },
-    { href: "/#about", label: "About", icon: <Info /> },
+    { href: "/about", label: "About", icon: <Info /> },
     { href: "/#contact", label: "Contact", icon: <Mail /> },
 ];
 
