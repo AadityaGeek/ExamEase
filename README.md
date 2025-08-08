@@ -19,11 +19,11 @@ ExamEase is an intelligent web application designed to revolutionize how student
 
 | Landing Page | Generation Form |
 | :---: | :---: |
-| <img src="public/images/landing-page.png" alt="Landing Page" data-ai-hint="app screenshot"> | <img src="/public/images/generation-form.png" alt="Question Generation Form" data-ai-hint="app form screenshot"> |
+| <img src="public/images/readme/landing-page.png" alt="Landing Page" data-ai-hint="app screenshot"> | <img src="/public/images/readme/generation-form.png" alt="Question Generation Form" data-ai-hint="app form screenshot"> |
 
 | Review Dialog | Generated Questions |
 | :---: | :---: |
-| <img src="/public/images/review-dialog.png" alt="Review Dialog" data-ai-hint="app dialog screenshot"> | <img src="/public/images/generated-questions.png" alt="Generated Questions" data-ai-hint="app questions screenshot"> |
+| <img src="/public/images/readme/review-dialog.png" alt="Review Dialog" data-ai-hint="app dialog screenshot"> | <img src="/public/images/readme/generated-questions.png" alt="Generated Questions" data-ai-hint="app questions screenshot"> |
 
 
 ## 🚀 How It Works

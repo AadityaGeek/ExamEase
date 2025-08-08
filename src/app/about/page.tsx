@@ -14,11 +14,12 @@ export default function AboutPage() {
         {/* Hero Section */}
         <section className="relative flex items-center justify-center text-center text-white h-[60vh]">
           <Image
-            src="https://placehold.co/1920x1080.png"
+            src="/images/res/hero-about.jpg"
             alt="Students studying together"
             fill={true}
             objectFit="cover"
             className="absolute inset-0"
+            priority={true}
             data-ai-hint="happy diverse students"
           />
           <div className="absolute inset-0 bg-black/50 z-10"></div>
@@ -32,7 +33,7 @@ export default function AboutPage() {
         <section className="py-16 md:py-24">
             <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
                 <div className="space-y-4">
-                    <h2 className="flex items-center gap-3 text-3xl md:text-4xl font-bold text-primary"><Users className="h-8 w-8" /> Who Are We?</h2>
+                    <h2 className="flex items-center gap-3 text-2xl sm:text-3xl md:text-4xl font-bold"><Users className="h-8 w-8 text-primary" /> Who Are We?</h2>
                     <p className="text-lg text-muted-foreground">
                         At our core, we're a team of one with a big idea: that preparing for exams shouldn't be a stressful, time-consuming chore. ExamEase is the result of that idea—a smart, friendly, and powerful AI companion designed to make learning and testing more efficient and accessible for every student and educator.
                     </p>
@@ -42,7 +43,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                      <Image
-                        src="https://placehold.co/600x400.png"
+                        src="/images/res/who-are-we.jpg"
                         alt="A student using a laptop with icons for books and ideas"
                         width={600}
                         height={400}
@@ -58,7 +59,7 @@ export default function AboutPage() {
             <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
                  <div className="order-last md:order-first">
                     <Image
-                        src="https://placehold.co/600x400.png"
+                        src="/images/res/why-we-built.jpg"
                         alt="A lightbulb symbolizing an idea"
                         width={600}
                         height={400}
@@ -67,7 +68,7 @@ export default function AboutPage() {
                     />
                 </div>
                 <div className="space-y-4">
-                    <h2 className="flex items-center gap-3 text-3xl md:text-4xl font-bold text-primary"><History className="h-8 w-8" /> Why We Built ExamEase</h2>
+                    <h2 className="flex items-center gap-3 text-2xl sm:text-3xl md:text-4xl font-bold"><History className="h-8 w-8 text-primary" /> Why We Built ExamEase</h2>
                     <p className="text-lg text-muted-foreground">
                        ExamEase started from a simple, personal frustration: "Why is it so hard to find good, relevant practice questions for a specific chapter?" I spent countless hours searching for materials during my own studies and saw a clear gap.
                     </p>
@@ -83,14 +84,14 @@ export default function AboutPage() {
             <div className="container mx-auto px-4 space-y-16">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="space-y-4">
-                        <h3 className="flex items-center gap-3 text-3xl font-bold"><Target className="h-8 w-8 text-primary" /> Our Mission</h3>
+                        <h3 className="flex items-center gap-3 text-2xl sm:text-3xl font-bold"><Target className="h-8 w-8 text-primary" /> Our Mission</h3>
                         <p className="text-lg text-muted-foreground">
                             Our mission is to empower students and educators by using AI to create high-quality, accessible learning tools. We want to eliminate the tedious parts of exam preparation, freeing up more time for genuine understanding and teaching.
                         </p>
                     </div>
                      <div>
                         <Image
-                            src="https://placehold.co/600x400.png"
+                            src="/images/res/our-mission.jpg"
                             alt="A person reaching for a star"
                             width={600}
                             height={400}
@@ -102,7 +103,7 @@ export default function AboutPage() {
                  <div className="grid md:grid-cols-2 gap-12 items-center">
                     <div className="order-last md:order-first">
                         <Image
-                            src="https://placehold.co/600x400.png"
+                            src="/images/res/vision.jpg"
                             alt="A telescope pointing at the stars"
                             width={600}
                             height={400}
@@ -111,7 +112,7 @@ export default function AboutPage() {
                         />
                     </div>
                     <div className="space-y-4">
-                        <h3 className="flex items-center gap-3 text-3xl font-bold"><Eye className="h-8 w-8 text-primary" /> Our Vision</h3>
+                        <h3 className="flex items-center gap-3 text-2xl sm:text-3xl font-bold"><Eye className="h-8 w-8 text-primary" /> Our Vision</h3>
                         <p className="text-lg text-muted-foreground">
                             We envision a future where personalized education is just a click away. A future where AI acts as a personal tutor for every student, helping them identify weaknesses, build confidence, and achieve their academic goals without barriers.
                         </p>
